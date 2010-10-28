@@ -1,4 +1,5 @@
 
+import sys
 import networkx as nx
 import matplotlib.pyplot as plt
 import numpy as np
@@ -11,7 +12,6 @@ plot_initial_colormap = 0
 plot_graph = 0
 plot_colormap = 1
 
-color_differences = 1  
 color_permutations = 1  
 
 Nregions = [7,6,4,3,2, 4,3,1, 4,2, 4,1,3, 3,2] # number of desired maximally distinct colors in CIELUV
@@ -28,8 +28,8 @@ if plot_initial_graph:
 
 # Loop through subgraphs
 Ntotal = sum(Nregions)
-for iN, N in enumerate(Nregions):
-    if iN == 1:
+for iNregions, N in enumerate(Nregions):
+    if iNregions == 1:
         break 
     color_angle = 360.0/pow(N,2)  # print(N, color_angle)
     
@@ -56,32 +56,32 @@ for iN, N in enumerate(Nregions):
             rgb = lch.convert_to('rgb', debug=False)
             plt.barh(0,100,1,0, color=[rgb.rgb_r/255.,rgb.rgb_g/255.,rgb.rgb_b/255.])
             pos = list(ax.get_position().bounds)
-    
+                    
     # Compute the differences between every pair of colors in the colormap
-    if color_differences:
+    if color_permutations:
         # Convert subgraph into an adjacency matrix (1 for adjacent pair of regions)
         outlist = [n for n,d in G.nodes_iter(data=True) \
                    if ('lobe' in d.keys()) and (d['lobe']=='FL') and (d['sub']=='lateral surface')]
         g = G.subgraph(outlist)
         neighbor_matrix = np.array(nx.to_numpy_matrix(g))
-                
-        # Find color differences
-        color_delta_matrix = np.zeros(np.shape(neighbor_matrix))   
-        for i in range(N):
-            lch1 = LCHuvColor(Lumas[i],chroma,hue_angles[i]) 
-            for j in range(N):
-                if j > i:
-                    lch2 = LCHuvColor(Lumas[j],chroma,hue_angles[j])
-                    DE = lch1.delta_e(lch2, mode='cie2000')
-                    color_delta_matrix[i,j] = DE
-        
-    # Store the color permutation with the minimum adjacency cost
-    if color_permutations:
+
+        # Compute permutations of colors and color pair differences
         DEmin = np.Inf
         color_permutations = [np.array(s) for s in itertools.permutations(range(0,N),N)]
-        for ip in range(len(color_permutations)):
-            color_permutation = color_permutations[ip]
-            DE = np.sum((color_delta_matrix[color_permutation] * neighbor_matrix))
+        for ipermutations in range(len(color_permutations)):
+            color_permutation = color_permutations[ipermutations]
+            color_delta_matrix = np.zeros(np.shape(neighbor_matrix))   
+            for i1, icolor1 in enumerate(color_permutation):
+                lch1 = LCHuvColor(Lumas[icolor1],chroma,hue_angles[icolor1]) 
+                for i2, icolor2 in enumerate(color_permutation):
+                    if i2 > i1:
+                        lch2 = LCHuvColor(Lumas[icolor2],chroma,hue_angles[icolor2])
+                        DE = lch1.delta_e(lch2, mode='cie2000')
+                        color_delta_matrix[i1,i2] = DE
+            #sys.exit()
+
+            DE = np.sum((color_delta_matrix * neighbor_matrix))
+            # Store the color permutation with the minimum adjacency cost
             if DE < DEmin:
                 DEmin = DE
                 color_permutation_min = color_permutation
