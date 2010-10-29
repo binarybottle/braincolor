@@ -2,91 +2,92 @@
 import networkx as nx
 
 G = nx.Graph()
-                             
-G.add_node("111", roi="FRP",   lobe="FL", sub="lateral surface")
-G.add_node("112", roi="SFG",   lobe="FL", sub="lateral surface")
-G.add_node("113", roi="MFG",   lobe="FL", sub="lateral surface")
-G.add_node("114", roi="OpIFG", lobe="FL", sub="lateral surface")
-G.add_node("115", roi="ORIFG", lobe="FL", sub="lateral surface")
-G.add_node("116", roi="TrIFG", lobe="FL", sub="lateral surface")
-G.add_node("117", roi="PrG",   lobe="FL", sub="lateral surface")
 
-G.add_node("121", roi="MSFG",  lobe="FL", sub="medial surface")
-G.add_node("122", roi="SMC",   lobe="FL", sub="medial surface")
-G.add_node("123", roi="MFC",   lobe="FL", sub="medial surface")
-G.add_node("124", roi="GRe",   lobe="FL", sub="medial surface")
-G.add_node("125", roi="SCA",   lobe="FL", sub="medial surface")
-G.add_node("126", roi="MPrG",  lobe="FL", sub="medial surface")
+G.add_node("FRP",   num="111", lobe="FL", sub="lateral surface")
+G.add_node("SFG",   num="112", lobe="FL", sub="lateral surface")
+G.add_node("MFG",   num="113", lobe="FL", sub="lateral surface")
+G.add_node("OpIFG", num="114", lobe="FL", sub="lateral surface")
+G.add_node("OrIFG", num="115", lobe="FL", sub="lateral surface")
+G.add_node("TrIFG", num="116", lobe="FL", sub="lateral surface")
+G.add_node("PrG",   num="117", lobe="FL", sub="lateral surface")
+           
+G.add_node("MSFG",  num="121", lobe="FL", sub="medial surface")
+G.add_node("SMC",   num="122", lobe="FL", sub="medial surface")
+G.add_node("MFC",   num="123", lobe="FL", sub="medial surface")
+G.add_node("GRe",   num="124", lobe="FL", sub="medial surface")
+G.add_node("SCA",   num="125", lobe="FL", sub="medial surface")
+G.add_node("MPrG",  num="126", lobe="FL", sub="medial surface")
+           
+G.add_node("AOrG",  num="131", lobe="FL", sub="inferior surface")
+G.add_node("MOrG",  num="132", lobe="FL", sub="inferior surface")
+G.add_node("LOrG",  num="133", lobe="FL", sub="inferior surface")
+G.add_node("POrG",  num="134", lobe="FL", sub="inferior surface")
+           
+G.add_node("FO",    num="141", lobe="FL", sub="opercular region")
+G.add_node("CO",    num="142", lobe="FL", sub="opercular region")
+G.add_node("PO",    num="143", lobe="FL", sub="opercular region")
+           
+G.add_node("AIns",  num="151", lobe="FL", sub="insular region")
+G.add_node("PIns",  num="152", lobe="FL", sub="insular region")
+           
+           
+G.add_node("TMP",   num="211", lobe="TL", sub="lateral surface")
+G.add_node("STG",   num="212", lobe="TL", sub="lateral surface")
+G.add_node("MTG",   num="213", lobe="TL", sub="lateral surface")
+G.add_node("ITG",   num="214", lobe="TL", sub="lateral surface")
+           
+G.add_node("PP",    num="221", lobe="TL", sub="supratemporal surface")
+G.add_node("TTG",   num="222", lobe="TL", sub="supratemporal surface")
+G.add_node("PT",    num="223", lobe="TL", sub="supratemporal surface")
+           
+G.add_node("FuG",   num="231", lobe="TL", sub="inferior surface")
+           
+           
+G.add_node("PoG",   num="311", lobe="PL", sub="lateral surface")
+G.add_node("SMG",   num="312", lobe="PL", sub="lateral surface")
+G.add_node("SPL",   num="313", lobe="PL", sub="lateral surface")
+G.add_node("AnG",   num="314", lobe="PL", sub="lateral surface")
+           
+G.add_node("MPoG",  num="321", lobe="PL", sub="medial surface")
+G.add_node("PCu",   num="322", lobe="PL", sub="medial surface")
+           
+           
+G.add_node("SOG",   num="411", lobe="OL", sub="lateral surface")
+G.add_node("IOG",   num="412", lobe="OL", sub="lateral surface")
+G.add_node("MOG",   num="413", lobe="OL", sub="lateral surface")
+G.add_node("OCP",   num="414", lobe="OL", sub="lateral surface")
+           
+G.add_node("OFuG",  num="421", lobe="OL", sub="inferior surface")
+           
+G.add_node("Cun",   num="431", lobe="OL", sub="medial surface")
+G.add_node("Calc",  num="432", lobe="OL", sub="medial surface")
+G.add_node("LiG",   num="433", lobe="OL", sub="medial surface")
+           
+           
+G.add_node("ACgG",  num="511", lobe="LC", sub="cingulate cortex")
+G.add_node("MCgG",  num="512", lobe="LC", sub="cingulate cortex")
+G.add_node("PCgG",  num="513", lobe="LC", sub="cingulate cortex")
+           
+G.add_node("PHG",   num="521", lobe="LC", sub="medial temporal cortex")
+G.add_node("Ent",   num="522", lobe="LC", sub="medial temporal cortex")
 
-G.add_node("131", roi="AOrG",  lobe="FL", sub="inferior surface")
-G.add_node("132", roi="MOrG",  lobe="FL", sub="inferior surface")
-G.add_node("133", roi="LOrG",  lobe="FL", sub="inferior surface")
-G.add_node("134", roi="POrG",  lobe="FL", sub="inferior surface")
 
-G.add_node("141", roi="FO",    lobe="FL", sub="opercular region")
-G.add_node("142", roi="CO",    lobe="FL", sub="opercular region")
-G.add_node("143", roi="PO",    lobe="FL", sub="opercular region")
-
-G.add_node("151", roi="AIns",  lobe="FL", sub="insular region")
-G.add_node("152", roi="PIns",  lobe="FL", sub="insular region")
-
-
-G.add_node("211", roi="TMP",   lobe="TL", sub="lateral surface")
-G.add_node("212", roi="STG",   lobe="TL", sub="lateral surface")
-G.add_node("213", roi="MTG",   lobe="TL", sub="lateral surface")
-G.add_node("214", roi="ITG",   lobe="TL", sub="lateral surface")
-
-G.add_node("221", roi="PP",    lobe="TL", sub="supratemporal surface")
-G.add_node("222", roi="TTG",   lobe="TL", sub="supratemporal surface")
-G.add_node("223", roi="PT",    lobe="TL", sub="supratemporal surface")
-
-G.add_node("231", roi="FuG",   lobe="TL", sub="inferior surface")
+G.add_edge("FRP","SFG")
+G.add_edge("FRP","MFG")
+G.add_edge("FRP","OrIFG")
+G.add_edge("PrG","MPrG")
+G.add_edge("MPrG","SMC")
+G.add_edge("PrG","SFG")
+G.add_edge("PrG","MFG")
+G.add_edge("PrG","OpIFG")
+#G.add_edge("OrIPG","OFC")
+G.add_edge("SMC","MSFG")
+G.add_edge("MSFG","MFC")
+G.add_edge("MFC","GRe")
+G.add_edge("MFC","SCA")
+G.add_edge("AIns","PIns")
 
 
-G.add_node("311", roi="PoG",   lobe="PL", sub="lateral surface")
-G.add_node("312", roi="SMG",   lobe="PL", sub="lateral surface")
-G.add_node("313", roi="SPL",   lobe="PL", sub="lateral surface")
-G.add_node("314", roi="AnG",   lobe="PL", sub="lateral surface")
-
-G.add_node("321", roi="MPoG",  lobe="PL", sub="medial surface")
-G.add_node("322", roi="PCu",   lobe="PL", sub="medial surface")
-
-
-G.add_node("411", roi="SOG",   lobe="OL", sub="lateral surface")
-G.add_node("412", roi="IOG",   lobe="OL", sub="lateral surface")
-G.add_node("413", roi="MOG",   lobe="OL", sub="lateral surface")
-G.add_node("414", roi="OCP",   lobe="OL", sub="lateral surface")
-
-G.add_node("421", roi="OFuG",  lobe="OL", sub="inferior surface")
-
-G.add_node("431", roi="Cun",   lobe="OL", sub="medial surface")
-G.add_node("432", roi="Calc",  lobe="OL", sub="medial surface")
-G.add_node("433", roi="LiG",   lobe="OL", sub="medial surface")
-
-
-G.add_node("511", roi="ACgG",  lobe="LC", sub="cingulate cortex")
-G.add_node("512", roi="MCgG",  lobe="LC", sub="cingulate cortex")
-G.add_node("513", roi="PCgG",  lobe="LC", sub="cingulate cortex")
-
-G.add_node("521", roi="PHG",   lobe="LC", sub="medial temporal cortex")
-G.add_node("522", roi="Ent",   lobe="LC", sub="medial temporal cortex")
-
-
-G.add_edge("111","112")
-G.add_edge("111","113")
-G.add_edge("111","115")
-G.add_edge("117","126")
-G.add_edge("126","122")
-G.add_edge("117","112")
-G.add_edge("117","113")
-G.add_edge("117","114")
-G.add_edge("122","121")
-G.add_edge("121","123")
-G.add_edge("123","124")
-G.add_edge("123","125")
-G.add_edge("152","152")
-
-"""
 G.add_edge("TMP","STG")
 G.add_edge("TMP","MTG")
 G.add_edge("TMP","ITG")
@@ -115,4 +116,3 @@ G.add_edge("OFuG","LiG")
 G.add_edge("ACgG","MCgG")
 G.add_edge("MCgG","PCgG")
 G.add_edge("PHG","Ent")
-"""
