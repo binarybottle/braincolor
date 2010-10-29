@@ -74,6 +74,7 @@ G.add_node("Ent",   num="522", lobe="LC", sub="medial temporal cortex")
 
 G.add_edge("FRP","SFG")
 G.add_edge("FRP","MFG")
+G.add_edge("SFG","MFG")
 G.add_edge("FRP","OrIFG")
 G.add_edge("PrG","MPrG")
 G.add_edge("MPrG","SMC")

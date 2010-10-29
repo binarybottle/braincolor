@@ -9,9 +9,10 @@ from braingraph import G
 
 plot_original_graph = 0
 plot_colormap = 0
-plot_graph = 1
+plot_graph = 0
+make_xml = 1
 
-run_permutations = 0
+run_permutations = 1
   
 Ntotal = G.number_of_nodes()
 color_angle = 360.0/Ntotal
@@ -25,13 +26,15 @@ step = 10
 
 # Plot whole graph, with subgraphs in different colors
 if plot_original_graph:
-    #neighbor_matrix_all = nx.to_numpy_matrix(G)
-    fig1 = plt.figure(figsize=(10,10))
     pos = nx.graphviz_layout(G,prog="neato")
     subG = nx.connected_component_subgraphs(G)
     colors = ['cyan','pink','yellow','tan','white']
     for i, g in enumerate(subG):
         nx.draw(g, pos, node_size=1200, node_color=colors[i])
+
+if make_xml:
+    f = open('braincolorgraph.xml','w')
+    f.write('<?xml version="1.0"?><LabelList>')
 
 # Loop through subgraphs
 for number_start in range(number_min,number_max,step):   
@@ -90,22 +93,37 @@ for number_start in range(number_min,number_max,step):
     
         # Draw a figure of the colored subgraph
         if plot_graph:
-            fig4 = plt.figure(figsize=(10,10))
-            pos = nx.graphviz_layout(G,prog="neato")
-            subG = nx.connected_component_subgraphs(G)
-            colors = ['cyan','pink','yellow','tan','white']
-            for i, g in enumerate(subG):
-                if i==0:
-                    #nx.draw(g, pos, node_size=1200, node_color=colors[i])
-                    for iN in range(N):
-                        ic = permutation_min[iN]
-                        lch = LCHuvColor(Lumas[ic],chroma,hues[ic]) #print(lch)
-                        rgb = lch.convert_to('rgb', debug=False)
-                        color = [rgb.rgb_r/255.,rgb.rgb_g/255.,rgb.rgb_b/255.]
-                        nx.draw_networkx_nodes(g, pos, node_size=1200, nodelist=[g.node.keys()[iN]], node_color=color)
-                        nx.draw_networkx_edges(g, pos, alpha=0.75, width=2)
-                else:
-                    nx.draw(g, pos, node_size=1200, node_color=colors[i])
-            
-                sys.exit()
+            pos = nx.graphviz_layout(G,prog="neato")  #nx.spring_layout(G)
+            #nx.draw(G, pos, node_size=1200, node_color='cyan') #, hold=True)
+            for iN in range(N):
+                ic = permutation_min[iN]
+                lch = LCHuvColor(Lumas[ic],chroma,hues[ic]) #print(lch)
+                rgb = lch.convert_to('rgb', debug=False)
+                color = [rgb.rgb_r/255.,rgb.rgb_g/255.,rgb.rgb_b/255.]
+                nx.draw_networkx_nodes(g, pos, node_size=1200, nodelist=[g.node.keys()[iN]], node_color=color) #, hold=True)
+                nx.draw_networkx_edges(g, pos, alpha=0.75, width=2)
+                nx.draw_networkx_labels(g, pos, font_size=10, font_color='white')
+           
+        # Generate XML output       
+        if make_xml:
+f.write('</LabelList>')
+    <?xml version="1.0"?>
+    <LabelList>
+    <Label>
+      <Name>Right ACgG  anterior cingulate gyrus</Name>
+      <Number>100</Number>
+      <RGBColor>255 62 150</RGBColor>
+    </Label>
 
+
+            for iN in range(N):
+                ic = permutation_min[iN]
+                lch = LCHuvColor(Lumas[ic],chroma,hues[ic]) #print(lch)
+                rgb = lch.convert_to('rgb', debug=False)
+                color = [rgb.rgb_r/255.,rgb.rgb_g/255.,rgb.rgb_b/255.]
+                nx.draw_networkx_nodes(g, pos, node_size=1200, nodelist=[g.node.keys()[iN]], node_color=color) #, hold=True)
+                nx.draw_networkx_edges(g, pos, alpha=0.75, width=2)
+                nx.draw_networkx_labels(g, pos, font_size=10, font_color='white')
+
+if make_xml:
+    f.write('</LabelList>')
