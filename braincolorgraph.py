@@ -9,8 +9,8 @@ from braingraph import G
 
 plot_original_graph = 0
 plot_colormap = 0
-plot_graph = 0
-make_xml = 1
+plot_graph = 1
+make_xml = 0
 
 run_permutations = 1
   
@@ -34,7 +34,8 @@ if plot_original_graph:
 
 if make_xml:
     f = open('braincolorgraph.xml','w')
-    f.write('<?xml version="1.0"?><LabelList>')
+    f.write('<?xml version="1.0"?>')
+    f.write('<LabelList>')
 
 # Loop through subgraphs
 for number_start in range(number_min,number_max,step):   
@@ -58,7 +59,7 @@ for number_start in range(number_min,number_max,step):
         if run_permutations:
             # Convert subgraph into an adjacency matrix (1 for adjacent pair of regions)
             neighbor_matrix = np.array(nx.to_numpy_matrix(g))
-    
+            sys.exit()
             # Compute permutations of colors and color pair differences
             DEmin = np.Inf
             permutations = [np.array(s) for s in itertools.permutations(range(0,N),N)]
@@ -106,24 +107,18 @@ for number_start in range(number_min,number_max,step):
            
         # Generate XML output       
         if make_xml:
-f.write('</LabelList>')
-    <?xml version="1.0"?>
-    <LabelList>
-    <Label>
-      <Name>Right ACgG  anterior cingulate gyrus</Name>
-      <Number>100</Number>
-      <RGBColor>255 62 150</RGBColor>
-    </Label>
-
-
             for iN in range(N):
                 ic = permutation_min[iN]
                 lch = LCHuvColor(Lumas[ic],chroma,hues[ic]) #print(lch)
                 rgb = lch.convert_to('rgb', debug=False)
-                color = [rgb.rgb_r/255.,rgb.rgb_g/255.,rgb.rgb_b/255.]
-                nx.draw_networkx_nodes(g, pos, node_size=1200, nodelist=[g.node.keys()[iN]], node_color=color) #, hold=True)
-                nx.draw_networkx_edges(g, pos, alpha=0.75, width=2)
-                nx.draw_networkx_labels(g, pos, font_size=10, font_color='white')
+                color = [rgb.rgb_r, rgb.rgb_g, rgb.rgb_b]
+                color = ' '.join([str(s) for s in color])
+                f.write(' <Label>')
+                f.write('  <Name>'+region_name+'</Name>')
+                f.write('  <Number>'+region_number+'</Number>')
+                f.write('  <RGBColor>'+color+'</RGBColor>')
+                f.write(' </Label>')
 
 if make_xml:
     f.write('</LabelList>')
+    f.close()
