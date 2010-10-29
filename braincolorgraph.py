@@ -7,9 +7,9 @@ import itertools
 from colormath.color_objects import LCHuvColor
 from braingraph import G
 
-plot_original_graph = 1
+plot_original_graph = 0
 plot_colormap = 0
-plot_graph = 0
+plot_graph = 1
 
 run_permutations = 0
   
@@ -79,10 +79,10 @@ for number_start in range(number_min,number_max,step):
         if plot_colormap:
             fig3 = plt.figure(figsize=(5,10))
             fig3.subplots_adjust(top=0.99, bottom=0.01, left=0.2, right=0.99)
-            for ip in range(N):
-                ax = plt.subplot(N, 1, ip+1)
+            for iN in range(N):
+                ax = plt.subplot(N, 1, iN+1)
                 plt.axis("off")
-                ic = permutation_min[ip]
+                ic = permutation_min[iN]
                 lch = LCHuvColor(Lumas[ic],chroma,hues[ic]) #print(lch)
                 rgb = lch.convert_to('rgb', debug=False)
                 plt.barh(0,50,1,0, color=[rgb.rgb_r/255.,rgb.rgb_g/255.,rgb.rgb_b/255.])
@@ -96,16 +96,16 @@ for number_start in range(number_min,number_max,step):
             colors = ['cyan','pink','yellow','tan','white']
             for i, g in enumerate(subG):
                 if i==0:
-                    nx.draw(g, pos, node_size=1200, node_color=colors[i])
+                    #nx.draw(g, pos, node_size=1200, node_color=colors[i])
                     for iN in range(N):
                         ic = permutation_min[iN]
                         lch = LCHuvColor(Lumas[ic],chroma,hues[ic]) #print(lch)
                         rgb = lch.convert_to('rgb', debug=False)
                         color = [rgb.rgb_r/255.,rgb.rgb_g/255.,rgb.rgb_b/255.]
                         nx.draw_networkx_nodes(g, pos, node_size=1200, nodelist=[g.node.keys()[iN]], node_color=color)
-                        #nx.draw_networkx_edges(g,pos,alpha=0.75,width=2)
+                        nx.draw_networkx_edges(g, pos, alpha=0.75, width=2)
                 else:
                     nx.draw(g, pos, node_size=1200, node_color=colors[i])
             
-        #sys.exit()
+                sys.exit()
 
