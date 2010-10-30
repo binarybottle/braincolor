@@ -3,15 +3,16 @@ import sys
 import networkx as nx
 import matplotlib.pyplot as plt
 import numpy as np
+import re
 import itertools
 from colormath.color_objects import LCHuvColor
 from braingraph import G
 
-plot_whole_colormap = 1
+plot_whole_colormap = 0
 plot_whole_graph = 0
 plot_colormap = 0
 plot_graph = 0
-make_xml = 0
+make_xml = 1
 
 Ntotal = G.number_of_nodes()
 color_angle = 360.0/Ntotal
@@ -21,8 +22,10 @@ chroma = 100
 number_min = 100
 number_max = 600
 step = 10
+in_xml = 'nvm_xml/parcLabels.xml'
+out_xml = 'parcLabels_braincolormap.xml'
 
-if plot_colormap * plot_graph * make_xml > 0:
+if plot_colormap + plot_graph + make_xml > 0:
     run_permutations = 1
 else: 
     run_permutations = 0
@@ -51,16 +54,14 @@ if plot_whole_graph:
         nx.draw(g, pos, node_size=1200, node_color=colors[i])
 
 if make_xml:
-    f = open('braincolorgraph.xml','w')
-    f.write('<?xml version="1.0"?>')
-    f.write('<LabelList>')
+    xml_string = open(in_xml).read()
 
 # Loop through subgraphs
 for number_start in range(number_min,number_max,step):   
     outlist = [n for n,d in G.nodes_iter(data=True) \
                if ('lobe' in d.keys()) and \
-               (np.int(d['num'])>number_start) and \
-               (np.int(d['num'])<number_start+step)] 
+               (np.int(d['id'])>number_start) and \
+               (np.int(d['id'])<number_start+step)] 
     N = len(outlist)
     if N > 0:
         g = G.subgraph(outlist)
@@ -78,7 +79,7 @@ for number_start in range(number_min,number_max,step):
             neighbor_matrix = np.array(nx.to_numpy_matrix(g))
             matrix_sum = np.sum(neighbor_matrix, axis=0)
             neighbor_matrix = neighbor_matrix * (matrix_sum * np.ones((N,N))).transpose()
-            #sys.exit()
+
             # Compute permutations of colors and color pair differences
             DEmax = 0
             permutations = [np.array(s) for s in itertools.permutations(range(0,N),N)]
@@ -120,7 +121,7 @@ for number_start in range(number_min,number_max,step):
                 lch = LCHuvColor(Lumas[ic],chroma,hues[ic]) #print(lch)
                 rgb = lch.convert_to('rgb', debug=False)
                 color = [rgb.rgb_r/255.,rgb.rgb_g/255.,rgb.rgb_b/255.]
-                nx.draw_networkx_nodes(g, pos, node_size=1200, nodelist=[g.node.keys()[iN]], node_color=color) #, hold=True)
+                nx.draw_networkx_nodes(g, pos, node_size=1200, nodelist=[g.node.keys()[iN]], node_color=color)
                 nx.draw_networkx_edges(g, pos, alpha=0.75, width=2)
                 nx.draw_networkx_labels(g, pos, font_size=10, font_color='white')
             #sys.exit()
@@ -128,17 +129,29 @@ for number_start in range(number_min,number_max,step):
         # Generate XML output       
         if make_xml:
             for iN in range(N):
+ 
+
+regex = re.compile(r'<Label>', re.MULTILINE)
+matches = [m.groups() for m in regex.finditer(xml_string)]
+
+for m in matches:
+    print 'Name: %s\nSequence:%s' % (m[0], m[1])
+
                 ic = permutation_max[iN]
                 lch = LCHuvColor(Lumas[ic],chroma,hues[ic]) #print(lch)
                 rgb = lch.convert_to('rgb', debug=False)
                 color = [rgb.rgb_r, rgb.rgb_g, rgb.rgb_b]
                 color = ' '.join([str(s) for s in color])
+                    
+                s = s.replace('mickey', 'minnie')
+
                 f.write(' <Label>')
-                f.write('  <Name>'+region_name+'</Name>')
-                f.write('  <Number>'+region_number+'</Number>')
+                f.write('  <Name>'+g.node.values()[iN]['name']+'</Name>')
+                f.write('  <Number>'+g.node.values()[ic]['id']+'</Number>')
                 f.write('  <RGBColor>'+color+'</RGBColor>')
                 f.write(' </Label>')
 
 if make_xml:
-    f.write('</LabelList>')
+    f = open(out_xml, 'w')
+    f.write(xml_string)
     f.close()
