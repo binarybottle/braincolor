@@ -6,6 +6,7 @@ import numpy as np
 import re
 import itertools
 from colormath.color_objects import LCHuvColor
+from xml.etree.ElementTree import ElementTree
 from braingraph import G
 
 plot_whole_colormap = 0
@@ -54,8 +55,12 @@ if plot_whole_graph:
         nx.draw(g, pos, node_size=1200, node_color=colors[i])
 
 if make_xml:
-    xml_string = open(in_xml).read()
-
+    tree    = ElementTree()
+    p       = tree.parse(in_xml)
+    Names   = tree.findall("Label/Name")
+    Colors  = tree.findall("Label/RGBColor")
+    #Numbers = tree.findall("Label/Number")
+    
 # Loop through subgraphs
 for number_start in range(number_min,number_max,step):   
     outlist = [n for n,d in G.nodes_iter(data=True) \
@@ -127,15 +132,30 @@ for number_start in range(number_min,number_max,step):
             #sys.exit()
             
         # Generate XML output       
+        """
+        <LabelList>
+        <Label>
+          <Name>3rd Ventricle</Name>
+          <Number>4</Number>
+          <RGBColor>204 182 142</RGBColor>
+        </Label>
+
+        old:
+        f.write(' <Label>')
+        f.write('  <Name>'+g.node.values()[iN]['name']+'</Name>')
+        f.write('  <Number>'+g.node.values()[ic]['id']+'</Number>')
+        f.write('  <RGBColor>'+color+'</RGBColor>')
+        f.write(' </Label>')
+        """
         if make_xml:
             for iN in range(N):
- 
-
-regex = re.compile(r'<Label>', re.MULTILINE)
-matches = [m.groups() for m in regex.finditer(xml_string)]
-
-for m in matches:
-    print 'Name: %s\nSequence:%s' % (m[0], m[1])
+                for iLabel in range(len(Names)):
+                   pass
+                """
+                regex = re.compile(r'<Label>', re.MULTILINE)
+                matches = [m.groups() for m in regex.finditer(xml_string)]
+                for m in matches:
+                    print 'Name: %s\nSequence:%s' % (m[0], m[1])
 
                 ic = permutation_max[iN]
                 lch = LCHuvColor(Lumas[ic],chroma,hues[ic]) #print(lch)
@@ -144,13 +164,7 @@ for m in matches:
                 color = ' '.join([str(s) for s in color])
                     
                 s = s.replace('mickey', 'minnie')
-
-                f.write(' <Label>')
-                f.write('  <Name>'+g.node.values()[iN]['name']+'</Name>')
-                f.write('  <Number>'+g.node.values()[ic]['id']+'</Number>')
-                f.write('  <RGBColor>'+color+'</RGBColor>')
-                f.write(' </Label>')
-
+                """
 if make_xml:
     f = open(out_xml, 'w')
     f.write(xml_string)
