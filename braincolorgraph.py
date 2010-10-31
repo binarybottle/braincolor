@@ -55,11 +55,8 @@ if plot_whole_graph:
         nx.draw(g, pos, node_size=1200, node_color=colors[i])
 
 if make_xml:
-    tree    = ElementTree()
-    p       = tree.parse(in_xml)
-    Names   = tree.findall("Label/Name")
-    Colors  = tree.findall("Label/RGBColor")
-    #Numbers = tree.findall("Label/Number")
+    tree = ElementTree()
+    tree.parse(in_xml)
     
 # Loop through subgraphs
 for number_start in range(number_min,number_max,step):   
@@ -149,23 +146,16 @@ for number_start in range(number_min,number_max,step):
         """
         if make_xml:
             for iN in range(N):
-                for iLabel in range(len(Names)):
-                   pass
-                """
-                regex = re.compile(r'<Label>', re.MULTILINE)
-                matches = [m.groups() for m in regex.finditer(xml_string)]
-                for m in matches:
-                    print 'Name: %s\nSequence:%s' % (m[0], m[1])
-
-                ic = permutation_max[iN]
+                ic = np.int(permutation_max[iN])
                 lch = LCHuvColor(Lumas[ic],chroma,hues[ic]) #print(lch)
                 rgb = lch.convert_to('rgb', debug=False)
                 color = [rgb.rgb_r, rgb.rgb_g, rgb.rgb_b]
                 color = ' '.join([str(s) for s in color])
-                    
-                s = s.replace('mickey', 'minnie')
-                """
+                
+                for elem in tree.getiterator():
+                    if len(elem) > 0:
+                        if g.nodes()[ic] in elem.getchildren()[0].text:
+                            elem.set('RGBColor', color)
 if make_xml:
-    f = open(out_xml, 'w')
-    f.write(xml_string)
-    f.close()
+    tree.write(out_xml)
+
