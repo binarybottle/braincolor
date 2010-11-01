@@ -155,7 +155,7 @@ for number_start in range(number_min,number_max,step):
                 for elem in tree.getiterator():
                     if len(elem) > 0:
                         if g.nodes()[ic] in elem.getchildren()[0].text:
-                            elem.set('RGBColor', color)
+                            elem._children.__setitem__(2, color)
 if make_xml:
     tree.write(out_xml)
 
