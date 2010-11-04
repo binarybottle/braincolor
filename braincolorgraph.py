@@ -6,7 +6,7 @@ import numpy as np
 import re
 import itertools
 from colormath.color_objects import LCHuvColor
-from elementtree import ElementTree as et
+from elementtree.ElementTree import parse, tostring, XML
 from braingraph import G
 
 plot_whole_colormap = 0
@@ -55,7 +55,8 @@ if plot_whole_graph:
         nx.draw(g, pos, node_size=1200, node_color=colors[i])
 
 if make_xml:
-    tree = et.parse(in_xml)
+    tree = parse(in_xml)
+    tree = XML(re.sub("\n", "", tostring(tree.getiterator()[0])))
     
 # Loop through subgraphs
 for number_start in range(number_min,number_max,step):   
@@ -153,8 +154,8 @@ for number_start in range(number_min,number_max,step):
                 
                 for elem in tree.getiterator():
                     if len(elem) > 0:
-                        if g.nodes()[ic] in elem.getchildren()[0].text:
-                            elem._children.__setitem__(2, color)
+                        if g.nodes()[ic] in list(elem):
+                            elem.set('RGBColor',color)
 if make_xml:
     tree.write(out_xml)
 
