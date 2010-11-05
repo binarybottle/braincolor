@@ -156,6 +156,6 @@ for number_start in range(number_min,number_max,step):
                     if len(elem) > 0:
                         if g.nodes()[ic] in list(elem):
                             elem.set('RGBColor',color)
-if make_xml:
-    tree.write(out_xml)
+#if make_xml:
+#    tree.write(out_xml)
 
