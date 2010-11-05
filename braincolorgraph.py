@@ -6,26 +6,58 @@ import numpy as np
 import re
 import itertools
 from colormath.color_objects import LCHuvColor
-from elementtree.ElementTree import parse, tostring, XML
-from braingraph import G
+from elementtree import ElementTree as et
+import xlrd
 
+# Procedures
 plot_whole_colormap = 0
-plot_whole_graph = 0
+plot_whole_graph = 0 
 plot_colormap = 0
-plot_graph = 0
-make_xml = 1
+plot_graph = 1
+make_xml = 0
 
-Ntotal = G.number_of_nodes()
-color_angle = 360.0/Ntotal
+# Files
+in_xml = 'nvm_xml/parcLabels.xml'
+out_xml = 'parcLabels_braincolormap.xml'
+in_table = 'docs/average_parc_Connectivity.xls'
+row1 = 1
+col1 = 4
+everyother = 2
+
+# Color parameters
 Lumas_init = np.arange(40,70,10)
 init_angle = 0
 chroma = 100
-number_min = 100
-number_max = 600
-step = 10
-in_xml = 'nvm_xml/parcLabels.xml'
-out_xml = 'parcLabels_braincolormap.xml'
+number_min = 10
+number_max = 60
+number_step = 10
 
+# Convert weighted connection matrix to weighted graph
+book = xlrd.open_workbook(in_table)
+sheet = book.sheets()[0]
+roi_numbers = sheet.col_values(0)[1:sheet.ncols:everyother] 
+roi_abbrs = sheet.col_values(1)[1:sheet.ncols:everyother]
+roi_names = sheet.col_values(2)[1:sheet.ncols:everyother]
+roi_numbers = [str(s).strip() for s in roi_numbers]
+roi_abbrs = [str(s).strip() for s in roi_abbrs]
+roi_names = [str(s).strip().strip('Right ') for s in roi_names]
+iA = 0
+A = np.zeros(((sheet.nrows-row1)/everyother,(sheet.ncols-col1)/everyother))
+for irow in range(row1,sheet.nrows,everyother):
+    Arow = [s.value for s in sheet.row(irow)[col1:]]
+    A[iA] = Arow[0:len(Arow):everyother]
+    iA += 1
+G = nx.from_numpy_matrix(A)
+Ntotal = G.number_of_nodes()
+for inode in range(Ntotal):
+    G.node[inode]['abbr'] = roi_abbrs[inode] 
+    G.node[inode]['name'] = roi_names[inode] 
+    G.node[inode]['lobe'] = roi_numbers[inode].split('.')[0]
+    G.node[inode]['sub']  = roi_numbers[inode].split('.')[1]
+    G.node[inode]['code'] = np.int(G.node[inode]['lobe']+G.node[inode]['sub'])
+
+# Secondary parameters
+color_angle = 360.0/Ntotal
 if plot_colormap + plot_graph + make_xml > 0:
     run_permutations = 1
 else: 
@@ -55,15 +87,13 @@ if plot_whole_graph:
         nx.draw(g, pos, node_size=1200, node_color=colors[i])
 
 if make_xml:
-    tree = parse(in_xml)
-    tree = XML(re.sub("\n", "", tostring(tree.getiterator()[0])))
+    tree = et.ElementTree(file=in_xml)
     
 # Loop through subgraphs
-for number_start in range(number_min,number_max,step):   
+for number_start in range(number_min,number_max,number_step):   
     outlist = [n for n,d in G.nodes_iter(data=True) \
-               if ('lobe' in d.keys()) and \
-               (np.int(d['id'])>number_start) and \
-               (np.int(d['id'])<number_start+step)] 
+               if (np.int(d['code'])>number_start) and \
+                  (np.int(d['code'])<number_start+number_step)] 
     N = len(outlist)
     if N > 0:
         g = G.subgraph(outlist)
@@ -118,12 +148,18 @@ for number_start in range(number_min,number_max,step):
         if plot_graph:
             pos = nx.graphviz_layout(G,prog="neato")  #nx.spring_layout(G)
             #nx.draw(G, pos, node_size=1200, node_color='cyan') #, hold=True)
+            node_labels = []    
+            print('HEY')
+            for node in g.nodes(data=True):
+                node_labels.append(node['abbr'])
+
             for iN in range(N):
                 ic = permutation_max[iN]
+                node_label = node_labels[ic]
                 lch = LCHuvColor(Lumas[ic],chroma,hues[ic]) #print(lch)
                 rgb = lch.convert_to('rgb', debug=False)
                 color = [rgb.rgb_r/255.,rgb.rgb_g/255.,rgb.rgb_b/255.]
-                nx.draw_networkx_nodes(g, pos, node_size=1200, nodelist=[g.node.keys()[iN]], node_color=color)
+                nx.draw_networkx_nodes(g, pos, node_size=1200, nodelist=[g.node.keys()[iN]], node_color=color, labels=node_label)
                 nx.draw_networkx_edges(g, pos, alpha=0.75, width=2)
                 nx.draw_networkx_labels(g, pos, font_size=10, font_color='white')
             #sys.exit()
@@ -136,13 +172,6 @@ for number_start in range(number_min,number_max,step):
           <Number>4</Number>
           <RGBColor>204 182 142</RGBColor>
         </Label>
-
-        old:
-        f.write(' <Label>')
-        f.write('  <Name>'+g.node.values()[iN]['name']+'</Name>')
-        f.write('  <Number>'+g.node.values()[ic]['id']+'</Number>')
-        f.write('  <RGBColor>'+color+'</RGBColor>')
-        f.write(' </Label>')
         """
         if make_xml:
             for iN in range(N):
@@ -152,10 +181,8 @@ for number_start in range(number_min,number_max,step):
                 color = [rgb.rgb_r, rgb.rgb_g, rgb.rgb_b]
                 color = ' '.join([str(s) for s in color])
                 
-                for elem in tree.getiterator():
-                    if len(elem) > 0:
-                        if g.nodes()[ic] in list(elem):
-                            elem.set('RGBColor',color)
-#if make_xml:
-#    tree.write(out_xml)
-
+                for elem in tree.getiterator()[0]:
+                    if g.nodes()[ic] in elem.getchildren()[0].text:
+                        elem.getchildren()[2].text = color
+if make_xml:
+    tree.write(out_xml)
