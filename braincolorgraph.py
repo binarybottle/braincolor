@@ -1,3 +1,19 @@
+#! /usr/bin/env python
+#                                                      22 October 2010
+# Read in weighted connection matrix (Excel file) and convert to weighted graph.
+# Plot the colormap for the whole graph    
+# Define colormap as uniformly distributed colors in CIELch color space
+# Plot whole graph, with subgraphs in different colors
+# Define colormap as uniformly distributed colors in CIELch color space
+# Compute the differences between every pair of colors in the colormap
+# Convert subgraph into an adjacency matrix (1 for adjacent pair of regions)
+# Compute permutations of colors and color pair differences
+# Plot the reordered colormap for the subgraph    
+# Draw a figure of the colored subgraph
+# Generate XML output       
+#
+# (c) Copyright 2010 . arno klein . arno@binarybottle.com . MIT license
+#
 
 import sys
 import networkx as nx
@@ -17,9 +33,9 @@ plot_graph = 1
 make_xml = 0
 
 # Files
-in_xml = 'nvm_xml/parcLabels.xml'
-out_xml = 'parcLabels_braincolormap.xml'
-in_table = 'docs/average_parc_Connectivity.xls'
+in_xml = 'input/parcLabels.xml'
+out_xml = 'output/parcLabels.xml'
+in_table = 'input/average_parc_Connectivity.xls'
 row1 = 1
 col1 = 4
 everyother = 2
