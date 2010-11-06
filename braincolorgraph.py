@@ -41,17 +41,17 @@ make_xml = 0
 in_xml = 'input/parcLabels.xml'
 out_xml = 'output/parcLabels.xml'
 in_table = 'input/average_parc_Connectivity.xls'
-row1 = 1
-col1 = 4
-everyother = 2
+row1 = 1  # first row with data
+col1 = 4  # first column with data
+everyother = 2  # use <everyother> alternate rows/columns;
+                # set to 2 for redundant labels across brain hemispheres
 
 # Color parameters
-Lumas_init = np.arange(40,70,10)
-init_angle = 0
-chroma = 100
-number_min = 10
-number_max = 60
-number_step = 10
+Lumas_init = np.arange(40,70,10)  # vary luminance values for adjacent colors
+chroma = 100  # color "saturation" level
+code_min = 10
+code_max = 60
+code_step = 1
 
 # Convert weighted connection matrix to weighted graph
 book = xlrd.open_workbook(in_table)
@@ -68,6 +68,7 @@ for irow in range(row1,sheet.nrows,everyother):
     Arow = [s.value for s in sheet.row(irow)[col1:]]
     A[iA] = Arow[0:len(Arow):everyother]
     iA += 1
+A = A/np.max(A)  # normalize weights
 G = nx.from_numpy_matrix(A)
 Ntotal = G.number_of_nodes()
 for inode in range(Ntotal):
@@ -78,6 +79,7 @@ for inode in range(Ntotal):
     G.node[inode]['code'] = np.int(G.node[inode]['lobe']+G.node[inode]['sub'])
 
 # Secondary parameters
+init_angle = 0
 color_angle = 360.0/Ntotal
 if plot_colormap + plot_graph + make_xml > 0:
     run_permutations = 1
@@ -101,24 +103,23 @@ if plot_whole_colormap:
         
 # Plot whole graph, with subgraphs in different colors
 if plot_whole_graph:
+    #edgewidth=[]
+    #for (u,v,d) in G.edges(data=True):
+    #    edgewidth.append(len(G.get_edge_data(u,v)))   
     pos = nx.graphviz_layout(G,prog="neato")
-    subG = nx.connected_component_subgraphs(G)
-    colors = ['cyan','pink','yellow','tan','white']
-    for i, g in enumerate(subG):
-        nx.draw(g, pos, node_size=1200, node_color=colors[i])
+    nx.draw(G, pos, node_size=1200, node_color='cyan')
 
 if make_xml:
     tree = et.ElementTree(file=in_xml)
     
 # Loop through subgraphs
-for number_start in range(number_min,number_max,number_step):   
+for code_start in range(code_min,code_max,code_step):   
     outlist = [n for n,d in G.nodes_iter(data=True) \
-               if (np.int(d['code'])>number_start) and \
-                  (np.int(d['code'])<number_start+number_step)] 
+               if (np.int(d['code'])>code_start) and \
+                  (np.int(d['code'])<=code_start+code_step)] 
     N = len(outlist)
     if N > 0:
         g = G.subgraph(outlist)
-                
         # Define colormap as uniformly distributed colors in CIELch color space
         Lumas = Lumas_init.copy()
         while len(Lumas) < N: 
@@ -130,8 +131,8 @@ for number_start in range(number_min,number_max,number_step):
         if run_permutations:
             # Convert subgraph into an adjacency matrix (1 for adjacent pair of regions)
             neighbor_matrix = np.array(nx.to_numpy_matrix(g))
-            matrix_sum = np.sum(neighbor_matrix, axis=0)
-            neighbor_matrix = neighbor_matrix * (matrix_sum * np.ones((N,N))).transpose()
+            #matrix_sum = np.sum(neighbor_matrix, axis=0)
+            #neighbor_matrix = neighbor_matrix * (matrix_sum * np.ones((N,N))).transpose()
 
             # Compute permutations of colors and color pair differences
             DEmax = 0
@@ -148,12 +149,11 @@ for number_start in range(number_min,number_max,number_step):
                             DE = lch1.delta_e(lch2, mode='cie2000')
                             color_delta_matrix[i1,i2] = DE   
                 DE = np.sum((color_delta_matrix * neighbor_matrix))
-                # Store the color permutation with the minimum adjacency cost
+                # Store the color permutation with the maximum adjacency cost
                 if DE > DEmax:
                     DEmax = DE
                     permutation_max = permutation
                     #color_delta_matrix_max = color_delta_matrix
-               
         # Plot the reordered colormap for the subgraph    
         if plot_colormap:
             fig3 = plt.figure(figsize=(5,10))
@@ -161,29 +161,29 @@ for number_start in range(number_min,number_max,number_step):
             for iN in range(N):
                 ax = plt.subplot(N, 1, iN+1)
                 plt.axis("off")
-                ic = permutation_max[iN]
+                ic = np.int(permutation_max[iN])
                 lch = LCHuvColor(Lumas[ic],chroma,hues[ic]) #print(lch)
                 rgb = lch.convert_to('rgb', debug=False)
                 plt.barh(0,50,1,0, color=[rgb.rgb_r/255.,rgb.rgb_g/255.,rgb.rgb_b/255.])
         # Draw a figure of the colored subgraph
         if plot_graph:
-            pos = nx.graphviz_layout(G,prog="neato")  #nx.spring_layout(G)
-            #nx.draw(G, pos, node_size=1200, node_color='cyan') #, hold=True)
+            #pos = nx.graphviz_layout(G,prog="neato")
+            pos = nx.spring_layout(G)
             node_labels = []    
-            print('HEY')
-            for node in g.nodes(data=True):
-                node_labels.append(node['abbr'])
+            for gnode in g.nodes(data=True):
+                node_labels.append(gnode[1]['abbr'])
 
             for iN in range(N):
-                ic = permutation_max[iN]
-                node_label = node_labels[ic]
+                ic = np.int(permutation_max[iN])
+                node_label = {}
+                node_label[0] = node_labels[ic]
                 lch = LCHuvColor(Lumas[ic],chroma,hues[ic]) #print(lch)
                 rgb = lch.convert_to('rgb', debug=False)
                 color = [rgb.rgb_r/255.,rgb.rgb_g/255.,rgb.rgb_b/255.]
-                nx.draw_networkx_nodes(g, pos, node_size=1200, nodelist=[g.node.keys()[iN]], node_color=color, labels=node_label)
+                nx.draw_networkx_nodes(g, pos, node_size=1200, nodelist=[g.node.keys()[iN]], node_color=color)
                 nx.draw_networkx_edges(g, pos, alpha=0.75, width=2)
-                nx.draw_networkx_labels(g, pos, font_size=10, font_color='white')
-            #sys.exit()
+                nx.draw_networkx_labels(g, pos, font_size=10, font_color='white', labels=node_label)
+            sys.exit()
             
         # Generate XML output       
         """
