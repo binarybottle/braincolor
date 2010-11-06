@@ -1,16 +1,21 @@
 #! /usr/bin/env python
-#                                                      22 October 2010
-# Read in weighted connection matrix (Excel file) and convert to weighted graph.
-# Plot the colormap for the whole graph    
-# Define colormap as uniformly distributed colors in CIELch color space
-# Plot whole graph, with subgraphs in different colors
-# Define colormap as uniformly distributed colors in CIELch color space
-# Compute the differences between every pair of colors in the colormap
-# Convert subgraph into an adjacency matrix (1 for adjacent pair of regions)
-# Compute permutations of colors and color pair differences
-# Plot the reordered colormap for the subgraph    
-# Draw a figure of the colored subgraph
-# Generate XML output       
+#                                                      
+# 1. Read in an Excel file with a weighted connection matrix,
+#    where each row and column represents a region of the brain, and values
+#    are a function of how much of the adjacent regions' boundaries are shared. 
+# 2. Convert the matrix to a NetworkX weighted graph.
+# 3. Create a colormap for the number of brain regions, with hues that are 
+#    uniformly distributed about a cylindrical color space, such as CIELch.
+# 4. Plot the colormap, the graph, or output a modified XML file.
+#
+# The graph is plotted as a collection of subgraphs, with each subgraph 
+# representing a collection of adjacent regions within a lobe, and assigned
+# adjacent colors in the color space.  
+# All permutations are computed for the colors of each subgraph, 
+# and the winning permutation is the one that maximizes the
+# discriminability of the colors of nodes of highest degree.
+# This is performed by mulfiplying the connection matrix for each subgraph
+# by the color difference matrix for each permutation. 
 #
 # (c) Copyright 2010 . arno klein . arno@binarybottle.com . MIT license
 #
