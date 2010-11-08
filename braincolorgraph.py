@@ -31,7 +31,7 @@ from elementtree import ElementTree as et
 import xlrd
 
 # Choose one procedure to run:
-plot_graph = 1
+plot_graph = 0
 plot_subgraphs = 0
 make_xml = 1
 plot_colormap = 0

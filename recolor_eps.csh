@@ -14,10 +14,10 @@ while ( $#DATA != 0 )
 	set R = $F:r
 	set E = $F:e
 
-	echo recolor_eps.py --mapFile output/parcLabels.xml \
-		output/${R}_prepared.$E output/${R}_recolored.$E 
-	recolor_eps.py --mapFile output/parcLabels.xml \
-		output/${R}_prepared.$E output/${R}_recolored.$E 
+	echo python recolor_eps.py --mapFile output/parcLabels.xml \
+		${R}_prepared.$E ${R}_recolored.$E 
+	python recolor_eps.py --mapFile output/parcLabels.xml \
+		${R}_prepared.$E ${R}_recolored.$E 
 
         shift DATA
 end
