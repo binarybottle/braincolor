@@ -42,7 +42,7 @@ save_plots = 1
 # Files
 in_dir = 'input/'
 out_dir = 'output/'
-out_images = out_dir + 'images/'
+out_images = out_dir
 in_xml = in_dir + 'parcLabels.xml'
 out_xml = out_dir + 'parcLabels.xml'
 in_table = in_dir + 'average_parc_Connectivity.xls'
