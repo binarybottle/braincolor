@@ -31,13 +31,13 @@ from elementtree import ElementTree as et
 import xlrd
 
 # Choose one procedure to run:
+plot_colormap = 1
+plot_subcolormaps = 0
 plot_graph = 0
 plot_subgraphs = 0
-make_xml = 1
-plot_colormap = 0
-plot_subcolormaps = 0
+make_xml = 0
 
-save_plots = 1
+save_plots = 0
 
 # Files
 in_dir = 'input/'
