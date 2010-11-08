@@ -12,22 +12,22 @@
 <Label>
   <Name>Right AIns  anterior insula</Name>
   <Number>102</Number>
-  <RGBColor>0 150 58</RGBColor>
+  <RGBColor>0 142 48</RGBColor>
 </Label>
 <Label>
   <Name>Left AIns  anterior insula</Name>
   <Number>103</Number>
-  <RGBColor>0 150 58</RGBColor>
+  <RGBColor>0 142 48</RGBColor>
 </Label>
 <Label>
   <Name>Right AOrG  anterior orbital gyrus</Name>
   <Number>104</Number>
-  <RGBColor>91 134 0</RGBColor>
+  <RGBColor>83 126 0</RGBColor>
 </Label>
 <Label>
   <Name>Left AOrG  anterior orbital gyrus</Name>
   <Number>105</Number>
-  <RGBColor>91 134 0</RGBColor>
+  <RGBColor>83 126 0</RGBColor>
 </Label>
 <Label>
   <Name>Right AnG   angular gyrus</Name>
@@ -62,32 +62,32 @@
 <Label>
   <Name>Right CO    central operculum</Name>
   <Number>112</Number>
-  <RGBColor>0 173 0</RGBColor>
+  <RGBColor>0 157 0</RGBColor>
 </Label>
 <Label>
   <Name>Left CO    central operculum</Name>
   <Number>113</Number>
-  <RGBColor>0 173 0</RGBColor>
+  <RGBColor>0 157 0</RGBColor>
 </Label>
 <Label>
   <Name>Right Cun   cuneus</Name>
   <Number>114</Number>
-  <RGBColor>228 84 224</RGBColor>
+  <RGBColor>212 63 208</RGBColor>
 </Label>
 <Label>
   <Name>Left Cun   cuneus</Name>
   <Number>115</Number>
-  <RGBColor>228 84 224</RGBColor>
+  <RGBColor>212 63 208</RGBColor>
 </Label>
 <Label>
   <Name>Right Ent   entorhinal area</Name>
   <Number>116</Number>
-  <RGBColor>208 60 122</RGBColor>
+  <RGBColor>200 49 114</RGBColor>
 </Label>
 <Label>
   <Name>Left Ent   entorhinal area</Name>
   <Number>117</Number>
-  <RGBColor>208 60 122</RGBColor>
+  <RGBColor>200 49 114</RGBColor>
 </Label>
 <Label>
   <Name>Right FO    frontal operculum</Name>
@@ -102,12 +102,12 @@
 <Label>
   <Name>Right FRP   frontal pole</Name>
   <Number>120</Number>
-  <RGBColor>228 106 78</RGBColor>
+  <RGBColor>210 90 59</RGBColor>
 </Label>
 <Label>
   <Name>Left FRP   frontal pole</Name>
   <Number>121</Number>
-  <RGBColor>228 106 78</RGBColor>
+  <RGBColor>210 90 59</RGBColor>
 </Label>
 <Label>
   <Name>Right FuG   fusiform gyrus</Name>
@@ -122,12 +122,12 @@
 <Label>
   <Name>Right GRe   gyrus rectus</Name>
   <Number>124</Number>
-  <RGBColor>179 141 0</RGBColor>
+  <RGBColor>163 126 0</RGBColor>
 </Label>
 <Label>
   <Name>Left GRe   gyrus rectus</Name>
   <Number>125</Number>
-  <RGBColor>179 141 0</RGBColor>
+  <RGBColor>163 126 0</RGBColor>
 </Label>
 <Label>
   <Name>Right IFG   inferior frontal gyrus</Name>
@@ -142,12 +142,12 @@
 <Label>
   <Name>Right IOG   inferior occipital gyrus</Name>
   <Number>128</Number>
-  <RGBColor>173 115 255</RGBColor>
+  <RGBColor>158 98 248</RGBColor>
 </Label>
 <Label>
   <Name>Left IOG   inferior occipital gyrus</Name>
   <Number>129</Number>
-  <RGBColor>173 115 255</RGBColor>
+  <RGBColor>158 98 248</RGBColor>
 </Label>
 <Label>
   <Name>Right IOrG  intermediate orbital gyrus</Name>
@@ -162,82 +162,82 @@
 <Label>
   <Name>Right ITG   inferior temporal gyrus</Name>
   <Number>132</Number>
-  <RGBColor>0 152 107</RGBColor>
+  <RGBColor>0 144 99</RGBColor>
 </Label>
 <Label>
   <Name>Left ITG   inferior temporal gyrus</Name>
   <Number>133</Number>
-  <RGBColor>0 152 107</RGBColor>
+  <RGBColor>0 144 99</RGBColor>
 </Label>
 <Label>
   <Name>Right LiG   lingual gyrus</Name>
   <Number>134</Number>
-  <RGBColor>196 50 209</RGBColor>
+  <RGBColor>189 35 202</RGBColor>
 </Label>
 <Label>
   <Name>Left LiG   lingual gyrus</Name>
   <Number>135</Number>
-  <RGBColor>196 50 209</RGBColor>
+  <RGBColor>189 35 202</RGBColor>
 </Label>
 <Label>
   <Name>Right LOrG  lateral orbital gyrus</Name>
   <Number>136</Number>
-  <RGBColor>0 114 0</RGBColor>
+  <RGBColor>76 169 0</RGBColor>
 </Label>
 <Label>
   <Name>Left LOrG  lateral orbital gyrus</Name>
   <Number>137</Number>
-  <RGBColor>0 114 0</RGBColor>
+  <RGBColor>76 169 0</RGBColor>
 </Label>
 <Label>
   <Name>Right MCgG  middle cingulate gyrus</Name>
   <Number>138</Number>
-  <RGBColor>208 44 171</RGBColor>
+  <RGBColor>201 28 164</RGBColor>
 </Label>
 <Label>
   <Name>Left MCgG  middle cingulate gyrus</Name>
   <Number>139</Number>
-  <RGBColor>208 44 171</RGBColor>
+  <RGBColor>201 28 164</RGBColor>
 </Label>
 <Label>
   <Name>Right MFC   medial frontal cortex</Name>
   <Number>140</Number>
-  <RGBColor>116 95 0</RGBColor>
+  <RGBColor>172 148 0</RGBColor>
 </Label>
 <Label>
   <Name>Left MFC   medial frontal cortex</Name>
   <Number>141</Number>
-  <RGBColor>116 95 0</RGBColor>
+  <RGBColor>172 148 0</RGBColor>
 </Label>
 <Label>
   <Name>Right MFG   middle frontal gyrus</Name>
   <Number>142</Number>
-  <RGBColor>188 91 0</RGBColor>
+  <RGBColor>242 138 0</RGBColor>
 </Label>
 <Label>
   <Name>Left MFG   middle frontal gyrus</Name>
   <Number>143</Number>
-  <RGBColor>188 91 0</RGBColor>
+  <RGBColor>242 138 0</RGBColor>
 </Label>
 <Label>
   <Name>Right MOG   middle occipital gyrus</Name>
   <Number>144</Number>
-  <RGBColor>129 95 241</RGBColor>
+  <RGBColor>121 86 234</RGBColor>
 </Label>
 <Label>
   <Name>Left MOG   middle occipital gyrus</Name>
   <Number>145</Number>
-  <RGBColor>129 95 241</RGBColor>
+  <RGBColor>121 86 234</RGBColor>
 </Label>
 <Label>
   <Name>Right MOrG  medial orbital gyrus</Name>
   <Number>146</Number>
-  <RGBColor>97 163 0</RGBColor>
+  <RGBColor>81 147 0</RGBColor>
 </Label>
 <Label>
   <Name>Left MOrG  medial orbital gyrus</Name>
   <Number>147</Number>
-  <RGBColor>97 163 0</RGBColor>
+  <RGBColor>81 147 0</RGBColor>
 </Label>
 <Label>
   <Name>Right MPoG  postcentral gyrus medial segment</Name>
@@ -252,22 +252,22 @@
 <Label>
   <Name>Right MPrG  precentral gyrus medial segment</Name>
   <Number>150</Number>
-  <RGBColor>132 124 0</RGBColor>
+  <RGBColor>179 171 0</RGBColor>
 </Label>
 <Label>
   <Name>Left MPrG  precentral gyrus medial segment</Name>
   <Number>151</Number>
-  <RGBColor>132 124 0</RGBColor>
+  <RGBColor>179 171 0</RGBColor>
 </Label>
 <Label>
   <Name>Right MSFG  superior frontal gyrus medial segment</Name>
   <Number>152</Number>
-  <RGBColor>146 154 0</RGBColor>
+  <RGBColor>95 102 0</RGBColor>
 </Label>
 <Label>
   <Name>Left MSFG  superior frontal gyrus medial segment</Name>
   <Number>153</Number>
-  <RGBColor>146 154 0</RGBColor>
+  <RGBColor>95 102 0</RGBColor>
 </Label>
 <Label>
   <Name>Right MTG   middle temporal gyrus</Name>
@@ -312,42 +312,42 @@
 <Label>
   <Name>Right OpIFG opercular part of the inferior frontal gyrus</Name>
   <Number>162</Number>
-  <RGBColor>211 122 0</RGBColor>
+  <RGBColor>154 72 0</RGBColor>
 </Label>
 <Label>
   <Name>Left OpIFG opercular part of the inferior frontal gyrus</Name>
   <Number>163</Number>
-  <RGBColor>211 122 0</RGBColor>
+  <RGBColor>154 72 0</RGBColor>
 </Label>
 <Label>
   <Name>Right OrIFG orbital part of the inferior frontal gyrus</Name>
   <Number>164</Number>
-  <RGBColor>148 77 0</RGBColor>
+  <RGBColor>167 95 0</RGBColor>
 </Label>
 <Label>
   <Name>Left OrIFG orbital part of the inferior frontal gyrus</Name>
   <Number>165</Number>
-  <RGBColor>148 77 0</RGBColor>
+  <RGBColor>167 95 0</RGBColor>
 </Label>
 <Label>
   <Name>Right PCgG  posterior cingulate gyrus</Name>
   <Number>166</Number>
-  <RGBColor>237 84 182</RGBColor>
+  <RGBColor>221 64 166</RGBColor>
 </Label>
 <Label>
   <Name>Left PCgG  posterior cingulate gyrus</Name>
   <Number>167</Number>
-  <RGBColor>237 84 182</RGBColor>
+  <RGBColor>221 64 166</RGBColor>
 </Label>
 <Label>
   <Name>Right PCu   precuneus</Name>
   <Number>168</Number>
-  <RGBColor>69 113 240</RGBColor>
+  <RGBColor>57 105 233</RGBColor>
 </Label>
 <Label>
   <Name>Left PCu   precuneus</Name>
   <Number>169</Number>
-  <RGBColor>69 113 240</RGBColor>
+  <RGBColor>57 105 233</RGBColor>
 </Label>
 <Label>
   <Name>Right PHG   parahippocampal gyrus</Name>
@@ -372,42 +372,42 @@
 <Label>
   <Name>Right PO    parietal operculum</Name>
   <Number>174</Number>
-  <RGBColor>0 144 0</RGBColor>
+  <RGBColor>0 137 0</RGBColor>
 </Label>
 <Label>
   <Name>Left PO    parietal operculum</Name>
   <Number>175</Number>
-  <RGBColor>0 144 0</RGBColor>
+  <RGBColor>0 137 0</RGBColor>
 </Label>
 <Label>
   <Name>Right PoG   postcentral gyrus</Name>
   <Number>176</Number>
-  <RGBColor>0 104 209</RGBColor>
+  <RGBColor>0 155 255</RGBColor>
 </Label>
 <Label>
   <Name>Left PoG   postcentral gyrus</Name>
   <Number>177</Number>
-  <RGBColor>0 104 209</RGBColor>
+  <RGBColor>0 155 255</RGBColor>
 </Label>
 <Label>
   <Name>Right POrG  posterior orbital gyrus</Name>
   <Number>178</Number>
-  <RGBColor>0 144 0</RGBColor>
+  <RGBColor>0 137 0</RGBColor>
 </Label>
 <Label>
   <Name>Left POrG  posterior orbital gyrus</Name>
   <Number>179</Number>
-  <RGBColor>0 144 0</RGBColor>
+  <RGBColor>0 137 0</RGBColor>
 </Label>
 <Label>
   <Name>Right PP    planum polare</Name>
   <Number>180</Number>
-  <RGBColor>0 150 171</RGBColor>
+  <RGBColor>0 143 163</RGBColor>
 </Label>
 <Label>
   <Name>Left PP    planum polare</Name>
   <Number>181</Number>
-  <RGBColor>0 150 171</RGBColor>
+  <RGBColor>0 143 163</RGBColor>
 </Label>
 <Label>
   <Name>Right PrG   precentral gyrus</Name>
@@ -422,12 +422,12 @@
 <Label>
   <Name>Right PT    planum temporale</Name>
   <Number>184</Number>
-  <RGBColor>0 174 210</RGBColor>
+  <RGBColor>0 158 194</RGBColor>
 </Label>
 <Label>
   <Name>Left PT    planum temporale</Name>
   <Number>185</Number>
-  <RGBColor>0 174 210</RGBColor>
+  <RGBColor>0 158 194</RGBColor>
 </Label>
 <Label>
   <Name>Right SCA   subcallosal area</Name>
@@ -452,82 +452,82 @@
 <Label>
   <Name>Right SFG   superior frontal gyrus</Name>
   <Number>190</Number>
-  <RGBColor>202 73 78</RGBColor>
+  <RGBColor>194 64 69</RGBColor>
 </Label>
 <Label>
   <Name>Left SFG   superior frontal gyrus</Name>
   <Number>191</Number>
-  <RGBColor>202 73 78</RGBColor>
+  <RGBColor>194 64 69</RGBColor>
 </Label>
 <Label>
   <Name>Right SMC   supplementary motor cortex</Name>
   <Number>192</Number>
-  <RGBColor>160 112 0</RGBColor>
+  <RGBColor>152 104 0</RGBColor>
 </Label>
 <Label>
   <Name>Left SMC   supplementary motor cortex</Name>
   <Number>193</Number>
-  <RGBColor>160 112 0</RGBColor>
+  <RGBColor>152 104 0</RGBColor>
 </Label>
 <Label>
   <Name>Right SMG   supramarginal gyrus</Name>
   <Number>194</Number>
-  <RGBColor>0 138 217</RGBColor>
+  <RGBColor>0 131 209</RGBColor>
 </Label>
 <Label>
   <Name>Left SMG   supramarginal gyrus</Name>
   <Number>195</Number>
-  <RGBColor>0 138 217</RGBColor>
+  <RGBColor>0 131 209</RGBColor>
 </Label>
 <Label>
   <Name>Right SOG   superior occipital gyrus</Name>
   <Number>196</Number>
-  <RGBColor>143 34 212</RGBColor>
+  <RGBColor>191 110 255</RGBColor>
 </Label>
 <Label>
   <Name>Left SOG   superior occipital gyrus</Name>
   <Number>197</Number>
-  <RGBColor>143 34 212</RGBColor>
+  <RGBColor>191 110 255</RGBColor>
 </Label>
 <Label>
   <Name>Right SPL   superior parietal lobule</Name>
   <Number>198</Number>
-  <RGBColor>0 158 251</RGBColor>
+  <RGBColor>0 143 235</RGBColor>
 </Label>
 <Label>
   <Name>Left SPL   superior parietal lobule</Name>
   <Number>199</Number>
-  <RGBColor>0 158 251</RGBColor>
+  <RGBColor>0 143 235</RGBColor>
 </Label>
 <Label>
   <Name>Right STG   superior temporal gyrus</Name>
   <Number>200</Number>
-  <RGBColor>0 127 117</RGBColor>
+  <RGBColor>0 181 170</RGBColor>
 </Label>
 <Label>
   <Name>Left STG   superior temporal gyrus</Name>
   <Number>201</Number>
-  <RGBColor>0 127 117</RGBColor>
+  <RGBColor>0 181 170</RGBColor>
 </Label>
 <Label>
   <Name>Right TMP   temporal pole</Name>
   <Number>202</Number>
-  <RGBColor>0 178 151</RGBColor>
+  <RGBColor>0 162 135</RGBColor>
 </Label>
 <Label>
   <Name>Left TMP   temporal pole</Name>
   <Number>203</Number>
-  <RGBColor>0 178 151</RGBColor>
+  <RGBColor>0 162 135</RGBColor>
 </Label>
 <Label>
   <Name>Right TrIFG triangular part of the inferior frontal gyrus</Name>
   <Number>204</Number>
-  <RGBColor>165 59 0</RGBColor>
+  <RGBColor>226 114 41</RGBColor>
 </Label>
 <Label>
   <Name>Left TrIFG triangular part of the inferior frontal gyrus</Name>
   <Number>205</Number>
-  <RGBColor>165 59 0</RGBColor>
+  <RGBColor>226 114 41</RGBColor>
 </Label>
 <Label>
   <Name>Right TTG   transverse temporal gyrus</Name>

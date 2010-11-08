@@ -31,13 +31,13 @@ from elementtree import ElementTree as et
 import xlrd
 
 # Choose one procedure to run:
-plot_colormap = 1
+plot_colormap = 0
 plot_subcolormaps = 0
 plot_graph = 0
-plot_subgraphs = 0
-make_xml = 0
+plot_subgraphs = 1
+make_xml = 1
 
-save_plots = 0
+save_plots = 1
 
 # Files
 in_dir = 'input/'
@@ -53,15 +53,17 @@ everyother = 2  # use <everyother> alternate rows/columns;
                 # set to 2 for redundant labels across brain hemispheres
                     
 # Color parameters
-Lumas_init = np.arange(40,70,10)  # vary luminance values for adjacent colors
+Lumas_init = np.arange(40,70,7)  # vary luminance values for adjacent colors
 chroma = 100  # color "saturation" level
-color_by_sublobe = 0  # group by sublobe -- else by assigned number
+color_by_sublobe = 1  # group by sublobe -- else by assigned number
 use_small_groups = 0  # if color_by_sublobe=0 & want faster output
 
 # Edge parameters
 use_existing_weights = 0  # Use weights
 weight_by_degree = 1  # Assign weights by node degree
+
 debug_subgraph = 0
+debug_lumas = 0
 
 # Convert weighted connection matrix to weighted graph
 if use_small_groups:
@@ -76,8 +78,14 @@ if color_by_sublobe:
     roi_numbers = [str(s).strip() for s in roi_numbers]
 else:
     roi_numbers = sheet.col_values(3)[1:sheet.ncols:everyother] 
-code_min = min(roi_numbers)
-code_max = max(roi_numbers)
+if color_by_sublobe:
+    code_min = min(roi_numbers)
+    code_max = max(roi_numbers)
+    code_min = np.int(code_min.split('.')[0] + code_min.split('.')[1])
+    code_max = np.int(code_max.split('.')[0] + code_max.split('.')[1])
+else:
+    code_min = min(roi_numbers)
+    code_max = max(roi_numbers)
 code_step = 1
     
 iA = 0
@@ -99,7 +107,10 @@ for inode in range(Ntotal):
 
 # Secondary parameters
 init_angle = 0
-color_angle = 360.0/Ntotal
+if debug_lumas:
+    color_angle = 0 
+else:
+    color_angle = 360.0/Ntotal
 
 # Plot the colormap for the whole graph    
 if plot_colormap:
@@ -108,7 +119,10 @@ if plot_colormap:
     Lumas = Lumas_init.copy()
     while len(Lumas) < Ntotal: 
         Lumas = np.hstack((Lumas,Lumas_init))
-    hues = np.arange(init_angle, init_angle + Ntotal*color_angle, color_angle)
+    if debug_lumas:
+        hues = init_angle*np.ones(Ntotal)
+    else:
+        hues = np.arange(init_angle, init_angle + Ntotal*color_angle, color_angle)
     for iN in range(Ntotal):
         ax = plt.subplot(Ntotal, 1, iN+1)
         plt.axis("off")
@@ -117,7 +131,7 @@ if plot_colormap:
         plt.barh(0,50,1,0, color=[rgb.rgb_r/255.,rgb.rgb_g/255.,rgb.rgb_b/255.])
     if save_plots:
         plt.savefig(out_images + "braincolormap.png")
-        
+     
 # Plot graph
 if plot_graph:
     labels={}
