@@ -1,8 +1,7 @@
 #! /usr/bin/env python
 #                                                      
 # 1. Read in an Excel file with a weighted connection matrix,
-#    where each row and column represents a region of the brain, and values
-#    are a function of how much of the adjacent regions' boundaries are shared. 
+#    where each row and column represents a region of the brain. 
 # 2. Convert the matrix to a NetworkX weighted graph.
 # 3. Create a colormap for the number of brain regions, with hues that are 
 #    uniformly distributed about a cylindrical color space, such as CIELch.
@@ -13,7 +12,7 @@
 # in the color space.  
 # All permutations are computed for the colors of each subgraph, 
 # and the winning permutation is the one that maximizes the
-# discriminability of the colors of nodes of highest degree.
+# discriminability of the colors of the nodes.
 # This is performed by mulfiplying the connection matrix for each subgraph
 # by the color difference matrix for each permutation. 
 #
@@ -36,7 +35,7 @@ plot_graph = 1
 plot_subgraphs = 0
 
 # Output XML file and save plots
-make_xml = 0
+make_xml = 1
 save_plots = 1
 
 # Files
@@ -53,10 +52,9 @@ everyother = 2  # use <everyother> alternate rows/columns;
                     
 # Color parameters
 init_angle = 0 #22.5
-#Lumas_init = np.array([60,75,90])
-Lumas_init = np.arange(50,100,20)  # vary luminance values for adjacent colors
-chroma = 70  # color "saturation" level
-repeat_hues = 1
+chroma = 100  # color "saturation" level
+Lumas_init = np.array([60,75,90])  # vary luminance values for adjacent colors
+repeat_hues = 1  # repeat each hue for the different Lumas
 color_by_sublobe = 0  # group by sublobe -- else by assigned number
 
 # Use weights in input adjacency matrix
