@@ -30,14 +30,14 @@ from colormath.color_objects import LCHuvColor
 from elementtree import ElementTree as et
 import xlrd
 
-# Choose one procedure to run:
+# Choose one plotting procedure:
 plot_colormap = 0
-plot_subcolormaps = 0
-plot_graph = 0
+plot_graph = 1
 plot_subgraphs = 0
-make_xml = 1
 
-save_plots = 0
+# Output XML file and save plots
+make_xml = 0
+save_plots = 1
 
 # Files
 in_dir = 'input/'
@@ -46,33 +46,28 @@ out_images = out_dir
 in_xml = in_dir + 'parcLabels.xml'
 out_xml = out_dir + 'parcLabels.xml'
 in_table = in_dir + 'average_parc_Connectivity.xls'
-in_table2 = in_dir + 'average_parc_Connectivity_subgroups.xls'
 row1 = 1  # first row with data
 col1 = 5  # first column with data
 everyother = 2  # use <everyother> alternate rows/columns;
                 # set to 2 for redundant labels across brain hemispheres
                     
 # Color parameters
-#Lumas_init = np.array([60,75,90])
 init_angle = 0 #22.5
+#Lumas_init = np.array([60,75,90])
 Lumas_init = np.arange(50,100,20)  # vary luminance values for adjacent colors
 chroma = 70  # color "saturation" level
-color_by_sublobe = 1  # group by sublobe -- else by assigned number
-use_small_groups = 0  # if color_by_sublobe=0 & want faster output
 repeat_hues = 1
+color_by_sublobe = 0  # group by sublobe -- else by assigned number
 
-# Edge parameters
-use_existing_weights = 0  # Use weights
+# Use weights in input adjacency matrix
+use_input_weights = 0  
 
 # Debugging
 debug_subgraph = 0
 debug_lumas = 0
 
 # Convert weighted connection matrix to weighted graph
-if use_small_groups:
-    book = xlrd.open_workbook(in_table2)
-else:
-    book = xlrd.open_workbook(in_table)
+book = xlrd.open_workbook(in_table)
 sheet = book.sheets()[0]
 roi_abbrs = sheet.col_values(0)[1:sheet.ncols:everyother]
 roi_abbrs = [str(s).strip() for s in roi_abbrs]
@@ -160,7 +155,7 @@ if make_xml:
     tree = et.ElementTree(file=in_xml)
     
 # Loop through subgraphs
-if plot_graph + plot_subcolormaps + plot_subgraphs + make_xml > 0:
+if plot_graph + plot_subgraphs + make_xml > 0:
     run_permutations = 1
     for code_start in range(code_min,code_max+code_step,code_step):   
         glist = [n for n,d in G.nodes_iter(data=True) \
@@ -189,7 +184,7 @@ if plot_graph + plot_subcolormaps + plot_subgraphs + make_xml > 0:
             if run_permutations:
                 # Convert subgraph into an adjacency matrix (1 for adjacent pair of regions)
                 neighbor_matrix = np.array(nx.to_numpy_matrix(g,nodelist=glist))
-                if use_existing_weights:
+                if use_input_weights:
                     pass
                 else:
                     neighbor_matrix = (neighbor_matrix > 0).astype(np.uint8)
@@ -219,6 +214,7 @@ if plot_graph + plot_subcolormaps + plot_subgraphs + make_xml > 0:
                         permutation_max = permutation
                         #color_delta_matrix_max = color_delta_matrix
             # Plot the reordered colormap for the subgraph    
+            plot_subcolormaps = 0
             if plot_subcolormaps:
                 fig3 = plt.figure(figsize=(5,10))
                 fig3.subplots_adjust(top=0.99, bottom=0.01, left=0.2, right=0.99)
