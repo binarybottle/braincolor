@@ -31,11 +31,11 @@ import xlrd
 
 # Choose one plotting procedure:
 plot_colormap = 0
-plot_graph = 1
-plot_subgraphs = 0
+plot_graph = 0
+plot_subgraphs = 1
 
 # Output XML file and save plots
-make_xml = 1
+make_xml = 0
 save_plots = 1
 
 # Files
@@ -52,7 +52,7 @@ everyother = 2  # use <everyother> alternate rows/columns;
                     
 # Color parameters
 init_angle = 0 #22.5
-chroma = 100  # color "saturation" level
+chroma = 70  # color "saturation" level
 Lumas_init = np.array([60,75,90])  # vary luminance values for adjacent colors
 repeat_hues = 1  # repeat each hue for the different Lumas
 color_by_sublobe = 0  # group by sublobe -- else by assigned number
@@ -242,18 +242,15 @@ if plot_graph + plot_subgraphs + make_xml > 0:
                 for iN in range(N):
                     labels[g.nodes()[iN]] = g.node[g.nodes()[iN]]['abbr']
                 pos = nx.graphviz_layout(g,prog="neato")
-                #pos = nx.spring_layout(G)
-                #colors = [np.int(s) for s in g.number_of_edges()*np.ones(g.number_of_edges())]
-                #nx.draw(g,pos,node_size=600,width=2,edge_color=colors,edge_cmap=plt.cm.Blues,with_labels=False)
-                nx.draw(g,pos,node_size=1200,width=1,with_labels=False)
-                nx.draw_networkx_labels(g,pos,labels,font_size=12,font_color='black')
+                nx.draw(g,pos,node_size=2000,width=1,with_labels=False)
+                nx.draw_networkx_labels(g,pos,labels,font_size=16,font_color='black')
                 plt.axis('off')
                 for iN in range(N):
                     ic = np.int(permutation_max[iN])
                     lch = LCHuvColor(Lumas[ic],chroma,hues[ic]) #print(lch)
                     rgb = lch.convert_to('rgb', debug=False)
                     color = [rgb.rgb_r/255.,rgb.rgb_g/255.,rgb.rgb_b/255.]
-                    nx.draw_networkx_nodes(g,pos,node_size=1200,nodelist=[g.node.keys()[iN]],node_color=color)
+                    nx.draw_networkx_nodes(g,pos,node_size=2000,nodelist=[g.node.keys()[iN]],node_color=color)
                 if save_plots:
                     plt.savefig(out_images + "braincolorsubgraph" + str(g.node[g.nodes()[0]]['code']) + ".png")
                 plt.show()
