@@ -57,6 +57,15 @@ Lumas_init = np.array([60,75,90])  # vary luminance values for adjacent colors
 repeat_hues = 1  # repeat each hue for the different Lumas
 color_by_sublobe = 0  # group by sublobe -- else by assigned number
 
+# Graph layout
+graph_node_size = 600
+graph_edge_width = 2
+graph_font_size = 12
+subgraph_node_size = 3000
+subgraph_edge_width = 5
+subgraph_font_size = 18
+axbuf = 10
+
 # Use weights in input adjacency matrix
 use_input_weights = 0  
 
@@ -80,8 +89,8 @@ if color_by_sublobe:
     code_min = np.int(code_min.split('.')[0] + code_min.split('.')[1])
     code_max = np.int(code_max.split('.')[0] + code_max.split('.')[1])
 else:
-    code_min = min(roi_numbers)
-    code_max = max(roi_numbers)
+    code_min = np.int(min(roi_numbers))
+    code_max = np.int(max(roi_numbers))
 code_step = 1
     
 iA = 0
@@ -141,11 +150,8 @@ if plot_graph:
     for i in range(Ntotal):
         labels[i] = G.node[i]['abbr']
     pos = nx.graphviz_layout(G,prog="neato")
-    #pos = nx.spring_layout(G)
-    #colors = [np.int(s) for s in G.number_of_edges()*np.ones(G.number_of_edges())]
-    #nx.draw(G,pos,node_color='#333399',node_size=600,width=2,edge_color=colors,edge_cmap=plt.cm.Blues,with_labels=False)
-    nx.draw(G,pos,node_color='#333399',node_size=600,width=1,with_labels=False)
-    nx.draw_networkx_labels(G, pos, labels, font_size=8, font_color='black')
+    nx.draw(G,pos,node_color='#333399',node_size=graph_node_size,width=graph_edge_width,with_labels=False)
+    nx.draw_networkx_labels(G, pos, labels, font_size=graph_font_size, font_color='black')
     plt.axis('off')
     #plt.show(); sys.exit()
     
@@ -234,7 +240,7 @@ if plot_graph + plot_subgraphs + make_xml > 0:
                     lch = LCHuvColor(Lumas[ic],chroma,hues[ic]) #print(lch)
                     rgb = lch.convert_to('rgb', debug=False)
                     color = [rgb.rgb_r/255.,rgb.rgb_g/255.,rgb.rgb_b/255.]
-                    nx.draw_networkx_nodes(g,pos,node_size=600,nodelist=[g.node.keys()[iN]],node_color=color)
+                    nx.draw_networkx_nodes(g,pos,node_size=graph_node_size,nodelist=[g.node.keys()[iN]],node_color=color)
 
             # Draw a figure of the colored subgraph
             if plot_subgraphs:
@@ -242,21 +248,24 @@ if plot_graph + plot_subgraphs + make_xml > 0:
                 for iN in range(N):
                     labels[g.nodes()[iN]] = g.node[g.nodes()[iN]]['abbr']
                 pos = nx.graphviz_layout(g,prog="neato")
-                nx.draw(g,pos,node_size=2000,width=1,with_labels=False)
-                nx.draw_networkx_labels(g,pos,labels,font_size=16,font_color='black')
+                nx.draw(g,pos,node_size=subgraph_node_size,width=subgraph_edge_width,alpha=0.5,with_labels=False)
+                nx.draw_networkx_labels(g,pos,labels,font_size=subgraph_font_size,font_color='black')
                 plt.axis('off')
                 for iN in range(N):
                     ic = np.int(permutation_max[iN])
                     lch = LCHuvColor(Lumas[ic],chroma,hues[ic]) #print(lch)
                     rgb = lch.convert_to('rgb', debug=False)
                     color = [rgb.rgb_r/255.,rgb.rgb_g/255.,rgb.rgb_b/255.]
-                    nx.draw_networkx_nodes(g,pos,node_size=2000,nodelist=[g.node.keys()[iN]],node_color=color)
+                    nx.draw_networkx_nodes(g,pos,node_size=subgraph_node_size,nodelist=[g.node.keys()[iN]],node_color=color)
+                ax = plt.gca().axis()
+                plt.gca().axis([ax[0]-axbuf,ax[1]+axbuf,ax[2]-axbuf,ax[3]+axbuf])
                 if save_plots:
                     plt.savefig(out_images + "braincolorsubgraph" + str(g.node[g.nodes()[0]]['code']) + ".png")
-                plt.show()
                 if debug_subgraph:
                     sys.exit()
-
+                else:
+                    plt.show()
+                
             # Generate XML output       
             """
             <LabelList>
