@@ -1,0 +1,21 @@
+
+The Python program braincolorgraph.py performs the following steps:
+
+1. Reads in an Excel file with (an optionally weighted) connection matrix,
+   where each row and column represents a region of the brain.
+2. Converts the matrix to a NetworkX weighted graph.
+3. Creates a colormap for the number of brain regions, with hues that are 
+   uniformly distributed about a cylindrical color space, such as CIELch.
+4. Plots the colormap, the graph, or modifies an input XML file. The program 
+   recolor_eps.[csh,py] uses the modified XML file to recolor EPS files.
+
+The program plots either the whole graph, or a collection of subgraphs, 
+with each subgraph representing a collection of adjacent regions, 
+and assigns adjacent colors in the color space.  
+All permutations are computed for the colors of each subgraph, 
+and the winning permutation is the one that maximizes the
+discriminability of the colors of nodes of highest degree.
+This is performed by mulfiplying the connection matrix for each subgraph
+by the color difference matrix for each permutation. 
+
+(c) Copyright 2010 . arno klein . arno@binarybottle.com . MIT license

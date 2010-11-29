@@ -1,16 +1,18 @@
 #! /usr/bin/env python
 #                                                      
-# 1. Read in an Excel file with a weighted connection matrix,
-#    where each row and column represents a region of the brain, and values
-#    are a function of how much of the adjacent regions' boundaries are shared. 
-# 2. Convert the matrix to a NetworkX weighted graph.
-# 3. Create a colormap for the number of brain regions, with hues that are 
+# The Python program braincolorgraph.py performs the following steps:
+# 
+# 1. Reads in an Excel file with (an optionally weighted) connection matrix,
+#    where each row and column represents a region of the brain.
+# 2. Converts the matrix to a NetworkX weighted graph.
+# 3. Creates a colormap for the number of brain regions, with hues that are 
 #    uniformly distributed about a cylindrical color space, such as CIELch.
-# 4. Plot the colormap, the graph, or output a modified XML file.
-#
-# The graph is plotted as a collection of subgraphs, with each subgraph 
-# representing a collection of adjacent regions, and assigned adjacent colors
-# in the color space.  
+# 4. Plots the colormap, the graph, or modifies an input XML file. The program 
+#    recolor_eps.[csh,py] uses the modified XML file to recolor EPS files.
+# 
+# The program plots either the whole graph, or a collection of subgraphs, 
+# with each subgraph representing a collection of adjacent regions, 
+# and assigns adjacent colors in the color space.  
 # All permutations are computed for the colors of each subgraph, 
 # and the winning permutation is the one that maximizes the
 # discriminability of the colors of nodes of highest degree.
@@ -18,7 +20,6 @@
 # by the color difference matrix for each permutation. 
 #
 # (c) Copyright 2010 . arno klein . arno@binarybottle.com . MIT license
-#
 
 import sys
 import networkx as nx
@@ -43,10 +44,9 @@ save_plots = 1
 in_dir = 'input/'
 out_dir = 'output/'
 out_images = out_dir
-in_xml = in_dir + 'parcLabels.xml'
-out_xml = out_dir + 'parcLabels.xml'
-in_table = in_dir + 'average_parc_Connectivity.xls'
-in_table2 = in_dir + 'average_parc_Connectivity_subgroups.xls'
+in_xml = in_dir + 'labels.xml'
+out_xml = out_dir + 'labels.xml'
+in_table = in_dir + 'region_connection_matrix.xls'
 row1 = 1  # first row with data
 col1 = 5  # first column with data
 everyother = 2  # use <everyother> alternate rows/columns;
@@ -66,10 +66,7 @@ debug_subgraph = 0
 debug_lumas = 0
 
 # Convert weighted connection matrix to weighted graph
-if use_small_groups:
-    book = xlrd.open_workbook(in_table2)
-else:
-    book = xlrd.open_workbook(in_table)
+book = xlrd.open_workbook(in_table)
 sheet = book.sheets()[0]
 roi_abbrs = sheet.col_values(0)[1:sheet.ncols:everyother]
 roi_abbrs = [str(s).strip() for s in roi_abbrs]
