@@ -7,6 +7,7 @@ set DATA = ( \
 input/images/PeriSylvian.eps \
 input/images/Dorsal-Ventral_surface1.eps \
 input/images/Mid-Lateral_surface3.eps \
+input/images/TableOfAbbrv.eps \
 )
 
 while ( $#DATA != 0 )

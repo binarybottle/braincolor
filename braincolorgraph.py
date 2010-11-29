@@ -1,11 +1,18 @@
 #! /usr/bin/env python
 #                                                      
+<<<<<<< HEAD
 # The Python program braincolorgraph.py performs the following steps:
 # 
 # 1. Reads in an Excel file with (an optionally weighted) connection matrix,
 #    where each row and column represents a region of the brain.
 # 2. Converts the matrix to a NetworkX weighted graph.
 # 3. Creates a colormap for the number of brain regions, with hues that are 
+=======
+# 1. Read in an Excel file with a weighted connection matrix,
+#    where each row and column represents a region of the brain. 
+# 2. Convert the matrix to a NetworkX weighted graph.
+# 3. Create a colormap for the number of brain regions, with hues that are 
+>>>>>>> 9ebb014b95b9defb6a114a7a64234619d119c780
 #    uniformly distributed about a cylindrical color space, such as CIELch.
 # 4. Plots the colormap, the graph, or modifies an input XML file. The program 
 #    recolor_eps.[csh,py] uses the modified XML file to recolor EPS files.
@@ -15,7 +22,7 @@
 # and assigns adjacent colors in the color space.  
 # All permutations are computed for the colors of each subgraph, 
 # and the winning permutation is the one that maximizes the
-# discriminability of the colors of nodes of highest degree.
+# discriminability of the colors of the nodes.
 # This is performed by mulfiplying the connection matrix for each subgraph
 # by the color difference matrix for each permutation. 
 #
@@ -31,37 +38,53 @@ from colormath.color_objects import LCHuvColor
 from elementtree import ElementTree as et
 import xlrd
 
-# Choose one procedure to run:
+# Choose one plotting procedure:
 plot_colormap = 0
-plot_subcolormaps = 0
 plot_graph = 0
 plot_subgraphs = 1
-make_xml = 1
 
+# Output XML file and save plots
+make_xml = 0
 save_plots = 1
 
 # Files
 in_dir = 'input/'
 out_dir = 'output/'
 out_images = out_dir
+<<<<<<< HEAD
 in_xml = in_dir + 'labels.xml'
 out_xml = out_dir + 'labels.xml'
 in_table = in_dir + 'region_connection_matrix.xls'
+=======
+in_xml = in_dir + 'parcLabels.xml'
+out_xml = out_dir + 'parcLabels.xml'
+in_table = in_dir + 'average_parc_Connectivity.xls'
+>>>>>>> 9ebb014b95b9defb6a114a7a64234619d119c780
 row1 = 1  # first row with data
 col1 = 5  # first column with data
 everyother = 2  # use <everyother> alternate rows/columns;
                 # set to 2 for redundant labels across brain hemispheres
                     
 # Color parameters
-Lumas_init = np.arange(40,70,7)  # vary luminance values for adjacent colors
-chroma = 100  # color "saturation" level
-color_by_sublobe = 1  # group by sublobe -- else by assigned number
-use_small_groups = 0  # if color_by_sublobe=0 & want faster output
+init_angle = 0 #22.5
+chroma = 70  # color "saturation" level
+Lumas_init = np.array([60,75,90])  # vary luminance values for adjacent colors
+repeat_hues = 1  # repeat each hue for the different Lumas
+color_by_sublobe = 0  # group by sublobe -- else by assigned number
 
-# Edge parameters
-use_existing_weights = 0  # Use weights
-weight_by_degree = 1  # Assign weights by node degree
+# Graph layout
+graph_node_size = 600
+graph_edge_width = 2
+graph_font_size = 12
+subgraph_node_size = 3000
+subgraph_edge_width = 5
+subgraph_font_size = 18
+axbuf = 10
 
+# Use weights in input adjacency matrix
+use_input_weights = 0  
+
+# Debugging
 debug_subgraph = 0
 debug_lumas = 0
 
@@ -81,8 +104,8 @@ if color_by_sublobe:
     code_min = np.int(code_min.split('.')[0] + code_min.split('.')[1])
     code_max = np.int(code_max.split('.')[0] + code_max.split('.')[1])
 else:
-    code_min = min(roi_numbers)
-    code_max = max(roi_numbers)
+    code_min = np.int(min(roi_numbers))
+    code_max = np.int(max(roi_numbers))
 code_step = 1
     
 iA = 0
@@ -103,12 +126,17 @@ for inode in range(Ntotal):
         G.node[inode]['code'] = roi_numbers[inode]
 
 # Secondary parameters
-init_angle = 0
 if debug_lumas:
     color_angle = 0 
 else:
-    color_angle = 360.0/Ntotal
-
+    color_angle = 360.0 / Ntotal
+    if repeat_hues:
+        nLumas = len(Lumas_init)
+        nangles = np.ceil(Ntotal / np.float(nLumas))
+        color_angle = nLumas * color_angle
+    else: 
+        nangles = Ntotal
+        
 # Plot the colormap for the whole graph    
 if plot_colormap:
     fig1 = plt.figure(figsize=(5,10))
@@ -119,7 +147,9 @@ if plot_colormap:
     if debug_lumas:
         hues = init_angle*np.ones(Ntotal)
     else:
-        hues = np.arange(init_angle, init_angle + Ntotal*color_angle, color_angle)
+        hues = np.arange(init_angle, init_angle + nangles*color_angle, color_angle)
+        if repeat_hues:
+            hues = np.hstack((hues * np.ones((nLumas,1))).transpose())
     for iN in range(Ntotal):
         ax = plt.subplot(Ntotal, 1, iN+1)
         plt.axis("off")
@@ -135,11 +165,8 @@ if plot_graph:
     for i in range(Ntotal):
         labels[i] = G.node[i]['abbr']
     pos = nx.graphviz_layout(G,prog="neato")
-    #pos = nx.spring_layout(G)
-    #colors = [np.int(s) for s in G.number_of_edges()*np.ones(G.number_of_edges())]
-    #nx.draw(G,pos,node_color='#333399',node_size=600,width=2,edge_color=colors,edge_cmap=plt.cm.Blues,with_labels=False)
-    nx.draw(G,pos,node_color='#333399',node_size=600,width=1,with_labels=False)
-    nx.draw_networkx_labels(G, pos, labels, font_size=8, font_color='white')
+    nx.draw(G,pos,node_color='#333399',node_size=graph_node_size,width=graph_edge_width,with_labels=False)
+    nx.draw_networkx_labels(G, pos, labels, font_size=graph_font_size, font_color='black')
     plt.axis('off')
     #plt.show(); sys.exit()
     
@@ -147,7 +174,7 @@ if make_xml:
     tree = et.ElementTree(file=in_xml)
     
 # Loop through subgraphs
-if plot_graph + plot_subcolormaps + plot_subgraphs + make_xml > 0:
+if plot_graph + plot_subgraphs + make_xml > 0:
     run_permutations = 1
     for code_start in range(code_min,code_max+code_step,code_step):   
         glist = [n for n,d in G.nodes_iter(data=True) \
@@ -161,17 +188,26 @@ if plot_graph + plot_subcolormaps + plot_subgraphs + make_xml > 0:
             Lumas = Lumas_init.copy()
             while len(Lumas) < N: 
                 Lumas = np.hstack((Lumas,Lumas_init))
-            hues = np.arange(init_angle, init_angle + N*color_angle, color_angle)
-            init_angle += N*color_angle
+        
+            if repeat_hues:
+                nangles_g = np.ceil(N / np.float(nLumas))
+            else: 
+                nangles_g = N
+            hues = np.arange(init_angle, init_angle + nangles_g*color_angle, color_angle)
+            if repeat_hues:
+                hues = np.hstack((hues * np.ones((nLumas,1))).transpose())
+
+            init_angle += nangles_g*color_angle
         
             # Compute the differences between every pair of colors in the colormap
             if run_permutations:
                 # Convert subgraph into an adjacency matrix (1 for adjacent pair of regions)
                 neighbor_matrix = np.array(nx.to_numpy_matrix(g,nodelist=glist))
-                if use_existing_weights:
+                if use_input_weights:
                     pass
                 else:
                     neighbor_matrix = (neighbor_matrix > 0).astype(np.uint8)
+                    weight_by_degree = 0  # Assign weights by node degree
                     if weight_by_degree:
                         matrix_sum = np.sum(neighbor_matrix, axis=0)
                         neighbor_matrix = neighbor_matrix * (matrix_sum * np.ones((N,N))).transpose()
@@ -197,6 +233,7 @@ if plot_graph + plot_subcolormaps + plot_subgraphs + make_xml > 0:
                         permutation_max = permutation
                         #color_delta_matrix_max = color_delta_matrix
             # Plot the reordered colormap for the subgraph    
+            plot_subcolormaps = 0
             if plot_subcolormaps:
                 fig3 = plt.figure(figsize=(5,10))
                 fig3.subplots_adjust(top=0.99, bottom=0.01, left=0.2, right=0.99)
@@ -218,7 +255,7 @@ if plot_graph + plot_subcolormaps + plot_subgraphs + make_xml > 0:
                     lch = LCHuvColor(Lumas[ic],chroma,hues[ic]) #print(lch)
                     rgb = lch.convert_to('rgb', debug=False)
                     color = [rgb.rgb_r/255.,rgb.rgb_g/255.,rgb.rgb_b/255.]
-                    nx.draw_networkx_nodes(g,pos,node_size=600,nodelist=[g.node.keys()[iN]],node_color=color)
+                    nx.draw_networkx_nodes(g,pos,node_size=graph_node_size,nodelist=[g.node.keys()[iN]],node_color=color)
 
             # Draw a figure of the colored subgraph
             if plot_subgraphs:
@@ -226,24 +263,24 @@ if plot_graph + plot_subcolormaps + plot_subgraphs + make_xml > 0:
                 for iN in range(N):
                     labels[g.nodes()[iN]] = g.node[g.nodes()[iN]]['abbr']
                 pos = nx.graphviz_layout(g,prog="neato")
-                #pos = nx.spring_layout(G)
-                #colors = [np.int(s) for s in g.number_of_edges()*np.ones(g.number_of_edges())]
-                #nx.draw(g,pos,node_size=600,width=2,edge_color=colors,edge_cmap=plt.cm.Blues,with_labels=False)
-                nx.draw(g,pos,node_size=1200,width=1,with_labels=False)
-                nx.draw_networkx_labels(g,pos,labels,font_size=12,font_color='white')
+                nx.draw(g,pos,node_size=subgraph_node_size,width=subgraph_edge_width,alpha=0.5,with_labels=False)
+                nx.draw_networkx_labels(g,pos,labels,font_size=subgraph_font_size,font_color='black')
                 plt.axis('off')
                 for iN in range(N):
                     ic = np.int(permutation_max[iN])
                     lch = LCHuvColor(Lumas[ic],chroma,hues[ic]) #print(lch)
                     rgb = lch.convert_to('rgb', debug=False)
                     color = [rgb.rgb_r/255.,rgb.rgb_g/255.,rgb.rgb_b/255.]
-                    nx.draw_networkx_nodes(g,pos,node_size=1200,nodelist=[g.node.keys()[iN]],node_color=color)
+                    nx.draw_networkx_nodes(g,pos,node_size=subgraph_node_size,nodelist=[g.node.keys()[iN]],node_color=color)
+                ax = plt.gca().axis()
+                plt.gca().axis([ax[0]-axbuf,ax[1]+axbuf,ax[2]-axbuf,ax[3]+axbuf])
                 if save_plots:
                     plt.savefig(out_images + "braincolorsubgraph" + str(g.node[g.nodes()[0]]['code']) + ".png")
-                plt.show()
                 if debug_subgraph:
                     sys.exit()
-
+                else:
+                    plt.show()
+                
             # Generate XML output       
             """
             <LabelList>
@@ -260,11 +297,11 @@ if plot_graph + plot_subcolormaps + plot_subgraphs + make_xml > 0:
                     rgb = lch.convert_to('rgb', debug=False)
                     color = [rgb.rgb_r, rgb.rgb_g, rgb.rgb_b]
                     color = ' '.join([str(s) for s in color])
-                    
                     for elem in tree.getiterator()[0]:
-                        if g.node[g.nodes()[ic]]['abbr'] in elem.getchildren()[0].text:
+                        if g.node[g.nodes()[iN]]['abbr'] in elem.getchildren()[0].text:
                             elem.getchildren()[2].text = color
-
+                            print(g.node[g.nodes()[iN]]['abbr'],color)
+                    
 if plot_graph:
     if save_plots:
         plt.savefig(out_images + "braincolorgraph.png")
