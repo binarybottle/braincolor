@@ -1,21 +1,29 @@
 
 The Python program braincolorgraph.py performs the following steps:
-
-1. Reads in an Excel file with (an optionally weighted) connection matrix,
-   where each row and column represents a region of the brain.
-2. Converts the matrix to a NetworkX weighted graph.
-3. Creates a colormap for the number of brain regions, with hues that are 
-   uniformly distributed about a cylindrical color space, such as CIELch.
-4. Plots the colormap, the graph, or modifies an input XML file. The program 
-   recolor_eps.[csh,py] uses the modified XML file to recolor EPS files.
-
-The program plots either the whole graph, or a collection of subgraphs, 
-with each subgraph representing a collection of adjacent regions, 
-and assigns adjacent colors in the color space.  
-All permutations are computed for the colors of each subgraph, 
-and the winning permutation is the one that maximizes the
-discriminability of the colors of nodes of highest degree.
-This is performed by mulfiplying the connection matrix for each subgraph
-by the color difference matrix for each permutation. 
+ 
+1. Read in an Excel file with a binary (or weighted) adjacency matrix,
+   where each row or column represents a region of the brain, and each 
+   value signifies whether (or the degree to which) a given row-column 
+   pair of regions are adjacent in the brain.
+   Example: (a) column 0 = region abbreviation
+            (b) column 1 & row 0 = full region name
+            (c) column 2 = group number (each region is assigned to a group)
+2. Create a colormap for the number of regions, with hues that are sampled
+   from the (approx. perceptually uniform) CIELch cylindrical color space.
+3. Convert the matrix from #1 to a graph, where each node represents a region
+   and each edge represents the adjacency value between its connected nodes.
+4. Break up the graph in #3 into subgraphs, where each subgraph represents
+   a group of adjacent regions (assigned the same group number in #1c).
+5. Compute every permutation of colors for the nodes of each subgraph in #4,
+   with adjacent colors in the color space.
+6. Assign each edge in each subgraph the value of the color difference 
+   between the colors assigned to its pair of connected nodes in #5.
+   (Multiply the connection matrix for each subgraph by
+    the color difference matrix for each permutation.)
+7. Find the optimal colors for the subgraph nodes that maximizes the sum 
+   of the edge values from #6.
+8. Plot the colormap, the whole graph, or individual colored subgraphs.
+9. Optional: Replace RGB colors in an XML file.  
+   The program recolor_eps.[csh,py] takes the output XML to recolor EPS files.
 
 (c) Copyright 2010 . arno klein . arno@binarybottle.com . MIT license
