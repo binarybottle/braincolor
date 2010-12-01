@@ -1,10 +1,12 @@
 #! /usr/bin/env python
 """                                                      
-braincolorgraph.py takes in an Excel file with an adjacency matrix, 
-where each value signifies adjacency between regions, and computes the 
-optimal assignment of colors to each group of regions, where optimal 
-means maximally distinguishable colors within a neighborhood of similar 
-colors in a color space:
+http://www.braincolor.org
+
+braincolors.py takes in an Excel file with an adjacency matrix, 
+where each value signifies adjacency between regions, and outputs the 
+optimal assignment of colors to each group of regions on the command line, 
+where optimal means maximally distinguishable colors within a neighborhood 
+of similar colors in a color space:
  
 1. Read in an Excel file with a binary (or weighted) adjacency matrix,
    where each row or column represents a region, and each value signifies 
@@ -50,17 +52,18 @@ from elementtree import ElementTree as et
 # Choose plotting procedure(s)
 plot_colormap = 0  # Plot colormap
 plot_graph = 0  # Plot whole graph
-plot_subgraphs = 1  # Plot each individual colored subgraph
-plot_graph_color = 0  # Plot whole graph with colored subgraphs
+plot_subgraphs = 0  # Plot each individual colored subgraph
 
 # Output XML file and save plots
 make_xml = 0
 save_plots = 0
+save_colors = 1
 
 # Files
 in_dir = 'input/'
 out_dir = 'output/'
 out_images = out_dir
+out_colors = out_dir + 'region_colors.txt'
 in_xml = in_dir + 'labels.xml'
 out_xml = out_dir + 'labels.xml'
 in_table = in_dir + 'region_adjacency_matrix.xls'
@@ -69,7 +72,7 @@ col_group = 2  # column with region group numbers
 col_start_data = 3  # first column with data
 row_start_data = 1  # first row with data
 everyother = 2  # use <everyother> alternate row(s);
-                # set to 2 for redundant labels across brain hemispheres
+                # set to 2 for redundant labels across, e.g. brain hemispheres
                     
 # Color parameters
 init_angle = 0 #22.5
@@ -88,6 +91,9 @@ axis_buffer = 10
 
 # Use weights in input adjacency matrix
 use_input_weights = 0  
+
+# Plot whole graph with colored subgraphs
+plot_graph_color = 0  
 
 #########
 # BEGIN #
@@ -127,7 +133,7 @@ else:
         
 # Plot the colormap for the whole graph    
 if plot_colormap:
-    plt.figure(0,figsize=(5,10))
+    plt.figure(Ntotal+1,figsize=(5,10))
     # Define colormap as uniformly distributed colors in CIELch color space
     Lumas = Lumas_init.copy()
     while len(Lumas) < Ntotal: 
@@ -142,11 +148,11 @@ if plot_colormap:
         rgb = lch.convert_to('rgb', debug=False)
         plt.barh(0,50,1,0, color=[rgb.rgb_r/255.,rgb.rgb_g/255.,rgb.rgb_b/255.])
     if save_plots:
-        plt.savefig(out_images + "braincolormap.png")
+        plt.savefig(out_images + "colormap.png")
      
 # Plot graph
 if plot_graph:
-    plt.figure(1)
+    plt.figure(Ntotal+2)
     labels={}
     for i in range(Ntotal):
         labels[i] = G.node[i]['abbr']
@@ -159,7 +165,8 @@ if make_xml:
     tree = et.ElementTree(file=in_xml)
     
 # Loop through subgraphs
-if plot_graph_color + plot_subgraphs + make_xml > 0:
+if plot_graph_color + plot_subgraphs + make_xml + save_colors > 0:
+    f = open(out_colors,'w')
     run_permutations = 1
     for code_start in range(code_min,code_max+code_step,code_step):   
         glist = [n for n,d in G.nodes_iter(data=True) \
@@ -216,7 +223,7 @@ if plot_graph_color + plot_subgraphs + make_xml > 0:
      
             # Color subgraphs
             if plot_graph_color:
-                plt.figure(1)
+                plt.figure(Ntotal+2)
                 for iN in range(N):
                     ic = np.int(permutation_max[iN])
                     lch = LCHuvColor(Lumas[ic],chroma,hues[ic]) #print(lch)
@@ -234,16 +241,21 @@ if plot_graph_color + plot_subgraphs + make_xml > 0:
                 nx.draw(g,pos,node_size=subgraph_node_size,width=subgraph_edge_width,alpha=0.5,with_labels=False)
                 nx.draw_networkx_labels(g,pos,labels,font_size=subgraph_font_size,font_color='black')
                 plt.axis('off')
+                print("")
+                f.write("\n")
                 for iN in range(N):
                     ic = np.int(permutation_max[iN])
                     lch = LCHuvColor(Lumas[ic],chroma,hues[ic]) #print(lch)
                     rgb = lch.convert_to('rgb', debug=False)
                     color = [rgb.rgb_r/255.,rgb.rgb_g/255.,rgb.rgb_b/255.]
+                    # Print optimal colors to the command line
+                    print(g.node[g.nodes()[iN]]['abbr'] + ': ' + str([rgb.rgb_r,rgb.rgb_g,rgb.rgb_b]))
+                    f.write(g.node[g.nodes()[iN]]['abbr'] + ': ' + str([rgb.rgb_r,rgb.rgb_g,rgb.rgb_b]) + '\n')
                     nx.draw_networkx_nodes(g,pos,node_size=subgraph_node_size,nodelist=[g.node.keys()[iN]],node_color=color)
                 ax = plt.gca().axis()
                 plt.gca().axis([ax[0]-axis_buffer,ax[1]+axis_buffer,ax[2]-axis_buffer,ax[3]+axis_buffer])
                 if save_plots:
-                    plt.savefig(out_images + "braincolorsubgraph" + str(g.node[g.nodes()[0]]['code']) + ".png")
+                    plt.savefig(out_images + "subgraph" + str(int(g.node[g.nodes()[0]]['code'])) + ".png")
                 plt.show()
                 
             # Replace RGB colors in an XML file       
@@ -265,11 +277,14 @@ if plot_graph_color + plot_subgraphs + make_xml > 0:
                     for elem in tree.getiterator()[0]:
                         if g.node[g.nodes()[iN]]['abbr'] in elem.getchildren()[0].text:
                             elem.getchildren()[2].text = color
-                            print(g.node[g.nodes()[iN]]['abbr'],color)
+                            #print(g.node[g.nodes()[iN]]['abbr'],color)
                     
 if plot_graph:
     if save_plots:
-        plt.savefig(out_images + "braincolorgraph.png")
+        plt.savefig(out_images + "graph.png")
 
 if make_xml:
     tree.write(out_xml)
+    
+if save_colors:
+    f.close()

@@ -1,9 +1,11 @@
 
-The Python program braincolorgraph.py takes in an Excel file with an adjacency 
-matrix, where each value signifies adjacency between regions, and computes the 
-optimal assignment of colors to each group of regions, where optimal 
-means maximally distinguishable colors within a neighborhood of similar 
-colors in a color space:
+http://www.braincolor.org
+
+braincolors.py takes in an Excel file with an adjacency matrix, 
+where each value signifies adjacency between regions, and outputs the 
+optimal assignment of colors to each group of regions on the command line, 
+where optimal means maximally distinguishable colors within a neighborhood 
+of similar colors in a color space:
  
 1. Read in an Excel file with a binary (or weighted) adjacency matrix,
    where each row or column represents a region, and each value signifies 

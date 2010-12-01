@@ -207,7 +207,7 @@ if options.doPrepare:
 							(pickNum, label)
 						pickList.append(label)
 						pickNum = pickNum + 1
-			choice = raw_input("Which ond do you want to use?  ")
+			choice = raw_input("Which one do you want to use?  ")
 			theChoice = int(choice)
 			if theChoice == 0:
 				go = True # stay in while loop
