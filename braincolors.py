@@ -54,10 +54,10 @@ plot_colormap = 0  # Plot colormap
 plot_graph = 0  # Plot whole graph
 plot_subgraphs = 0  # Plot each individual colored subgraph
 
-# Output XML file and save plots
-make_xml = 0
-save_plots = 0
+# Output color text file, save plots, and modify XML file
 save_colors = 1
+save_plots = 0
+make_xml = 0
 
 # Files
 in_dir = 'input/'
@@ -232,15 +232,17 @@ if plot_graph_color + plot_subgraphs + make_xml + save_colors > 0:
                     nx.draw_networkx_nodes(g,pos,node_size=graph_node_size,nodelist=[g.node.keys()[iN]],node_color=color)
 
             # Draw a figure of the colored subgraph
-            if plot_subgraphs:
-                plt.figure(code_start)
+            if plot_subgraphs or save_colors:
+                if plot_subgraphs:
+                    plt.figure(code_start)
                 labels={}
                 for iN in range(N):
                     labels[g.nodes()[iN]] = g.node[g.nodes()[iN]]['abbr']
-                pos = nx.graphviz_layout(g,prog="neato")
-                nx.draw(g,pos,node_size=subgraph_node_size,width=subgraph_edge_width,alpha=0.5,with_labels=False)
-                nx.draw_networkx_labels(g,pos,labels,font_size=subgraph_font_size,font_color='black')
-                plt.axis('off')
+                if plot_subgraphs:
+                    pos = nx.graphviz_layout(g,prog="neato")
+                    nx.draw(g,pos,node_size=subgraph_node_size,width=subgraph_edge_width,alpha=0.5,with_labels=False)
+                    nx.draw_networkx_labels(g,pos,labels,font_size=subgraph_font_size,font_color='black')
+                    plt.axis('off')
                 print("")
                 f.write("\n")
                 for iN in range(N):
@@ -251,12 +253,14 @@ if plot_graph_color + plot_subgraphs + make_xml + save_colors > 0:
                     # Print optimal colors to the command line
                     print(g.node[g.nodes()[iN]]['abbr'] + ': ' + str([rgb.rgb_r,rgb.rgb_g,rgb.rgb_b]))
                     f.write(g.node[g.nodes()[iN]]['abbr'] + ': ' + str([rgb.rgb_r,rgb.rgb_g,rgb.rgb_b]) + '\n')
-                    nx.draw_networkx_nodes(g,pos,node_size=subgraph_node_size,nodelist=[g.node.keys()[iN]],node_color=color)
-                ax = plt.gca().axis()
-                plt.gca().axis([ax[0]-axis_buffer,ax[1]+axis_buffer,ax[2]-axis_buffer,ax[3]+axis_buffer])
-                if save_plots:
-                    plt.savefig(out_images + "subgraph" + str(int(g.node[g.nodes()[0]]['code'])) + ".png")
-                plt.show()
+                    if plot_subgraphs:
+                        nx.draw_networkx_nodes(g,pos,node_size=subgraph_node_size,nodelist=[g.node.keys()[iN]],node_color=color)
+                if plot_subgraphs:
+                    ax = plt.gca().axis()
+                    plt.gca().axis([ax[0]-axis_buffer,ax[1]+axis_buffer,ax[2]-axis_buffer,ax[3]+axis_buffer])
+                    if save_plots:
+                        plt.savefig(out_images + "subgraph" + str(int(g.node[g.nodes()[0]]['code'])) + ".png")
+                    plt.show()
                 
             # Replace RGB colors in an XML file       
             """
