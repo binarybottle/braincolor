@@ -1,11 +1,14 @@
 #! /usr/bin/env python
 """                                                      
-The Python program braincolorgraph.py performs the following steps:
+braincolorgraph.py takes in an Excel file with an adjacency matrix, 
+where each value signifies adjacency between regions, and computes the 
+optimal assignment of colors to each group of regions, where optimal 
+means maximally distinguishable colors within a neighborhood of similar 
+colors in a color space:
  
 1. Read in an Excel file with a binary (or weighted) adjacency matrix,
-   where each row or column represents a region of the brain, and each 
-   value signifies whether (or the degree to which) a given row-column 
-   pair of regions are adjacent in the brain.
+   where each row or column represents a region, and each value signifies 
+   whether (or the degree to which) a given pair of regions are adjacent.
    Example: (a) column 0 = region abbreviation
             (b) column 1 & row 0 = full region name
             (c) column 2 = group number (each region is assigned to a group)
@@ -45,8 +48,8 @@ from elementtree import ElementTree as et
 ##################
 
 # Choose plotting procedure(s)
-plot_colormap = 1  # Plot colormap
-plot_graph = 1  # Plot whole graph
+plot_colormap = 0  # Plot colormap
+plot_graph = 0  # Plot whole graph
 plot_subgraphs = 1  # Plot each individual colored subgraph
 plot_graph_color = 0  # Plot whole graph with colored subgraphs
 
@@ -95,7 +98,7 @@ book = xlrd.open_workbook(in_table)
 sheet = book.sheets()[0]
 roi_abbrs = sheet.col_values(col_abbr)[1:sheet.ncols:everyother]
 roi_abbrs = [str(s).strip() for s in roi_abbrs]
-roi_numbers = sheet.col_values(3)[1:sheet.ncols:everyother] 
+roi_numbers = sheet.col_values(2)[1:sheet.ncols:everyother] 
 code_min = np.int(min(roi_numbers))
 code_max = np.int(max(roi_numbers))
 code_step = 1
@@ -189,10 +192,6 @@ if plot_graph_color + plot_subgraphs + make_xml > 0:
                     pass
                 else:
                     neighbor_matrix = (neighbor_matrix > 0).astype(np.uint8)
-                    weight_by_degree = 0  # Assign weights by node degree
-                    if weight_by_degree:
-                        matrix_sum = np.sum(neighbor_matrix, axis=0)
-                        neighbor_matrix = neighbor_matrix * (matrix_sum * np.ones((N,N))).transpose()
                 
                 # Compute permutations of colors and color pair differences
                 DEmax = 0
@@ -214,7 +213,7 @@ if plot_graph_color + plot_subgraphs + make_xml > 0:
                         DEmax = DE
                         permutation_max = permutation
                         #color_delta_matrix_max = color_delta_matrix
-                    
+     
             # Color subgraphs
             if plot_graph_color:
                 plt.figure(1)
