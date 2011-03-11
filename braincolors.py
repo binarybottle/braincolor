@@ -50,22 +50,22 @@ from elementtree import ElementTree as et
 ##################
 
 # Choose plotting procedure(s)
-plot_colormap = 0  # Plot colormap
+plot_colormap = 1  # Plot colormap
 plot_graph = 0  # Plot whole graph
-plot_subgraphs = 0  # Plot each individual colored subgraph
+plot_subgraphs = 1  # Plot each individual colored subgraph
 
 # Output color text file, save plots, and modify XML file
 save_colors = 1
-save_plots = 0
+save_plots = 1
 make_xml = 0
 
-# Files
-in_dir = 'input/'
-out_dir = 'output/'
-out_images = out_dir
+# Paths
+in_dir = 'input/input_LPBA40/'  # 'input/input_BrainCOLOR'
+out_dir = 'output/output_LPBA40/'  # 'output/output_BrainCOLOR'
 out_colors = out_dir + 'region_colors.txt'
-in_xml = in_dir + 'labels.xml'
-out_xml = out_dir + 'labels.xml'
+out_images = out_dir
+
+# Region adjacency table
 in_table = in_dir + 'region_adjacency_matrix.xls'
 col_abbr = 0  # column with region abbreviations
 col_group = 2  # column with region group numbers
@@ -73,7 +73,11 @@ col_start_data = 3  # first column with data
 row_start_data = 1  # first row with data
 everyother = 2  # use <everyother> alternate row(s);
                 # set to 2 for redundant labels across, e.g. brain hemispheres
-                    
+
+# If replacing RGB colors in an XML label file (make_xml=1)
+in_xml = in_dir + 'labels.xml'
+out_xml = out_dir + 'labels.xml'
+
 # Color parameters
 init_angle = 0 #22.5
 chroma = 70  # color "saturation" level
@@ -149,7 +153,7 @@ if plot_colormap:
         plt.barh(0,50,1,0, color=[rgb.rgb_r/255.,rgb.rgb_g/255.,rgb.rgb_b/255.])
     if save_plots:
         plt.savefig(out_images + "colormap.png")
-     
+
 # Plot graph
 if plot_graph:
     plt.figure(Ntotal+2)
@@ -160,10 +164,10 @@ if plot_graph:
     nx.draw(G,pos,node_color='cyan',node_size=graph_node_size,width=graph_edge_width,with_labels=False)
     nx.draw_networkx_labels(G, pos, labels, font_size=graph_font_size, font_color='black')
     plt.axis('off')
-    
+
 if make_xml:
     tree = et.ElementTree(file=in_xml)
-    
+
 # Loop through subgraphs
 if plot_graph_color + plot_subgraphs + make_xml + save_colors > 0:
     f = open(out_colors,'w')
@@ -175,12 +179,12 @@ if plot_graph_color + plot_subgraphs + make_xml + save_colors > 0:
         N = len(glist)
         if N > 0:
             g = G.subgraph(glist)
-            
+
             # Define colormap as uniformly distributed colors in CIELch color space
             Lumas = Lumas_init.copy()
             while len(Lumas) < N: 
                 Lumas = np.hstack((Lumas,Lumas_init))
-        
+
             if repeat_hues:
                 nangles_g = np.ceil(N / np.float(nLumas))
             else: 
@@ -190,7 +194,7 @@ if plot_graph_color + plot_subgraphs + make_xml + save_colors > 0:
                 hues = np.hstack((hues * np.ones((nLumas,1))).transpose())
 
             init_angle += nangles_g*color_angle
-        
+
             # Compute the differences between every pair of colors in the colormap
             if run_permutations:
                 # Convert subgraph into an adjacency matrix (1 for adjacent pair of regions)
@@ -199,7 +203,7 @@ if plot_graph_color + plot_subgraphs + make_xml + save_colors > 0:
                     pass
                 else:
                     neighbor_matrix = (neighbor_matrix > 0).astype(np.uint8)
-                
+
                 # Compute permutations of colors and color pair differences
                 DEmax = 0
                 permutations = [np.array(s) for s in itertools.permutations(range(0,N),N)]
@@ -220,7 +224,7 @@ if plot_graph_color + plot_subgraphs + make_xml + save_colors > 0:
                         DEmax = DE
                         permutation_max = permutation
                         #color_delta_matrix_max = color_delta_matrix
-     
+
             # Color subgraphs
             if plot_graph_color:
                 plt.figure(Ntotal+2)
@@ -261,7 +265,7 @@ if plot_graph_color + plot_subgraphs + make_xml + save_colors > 0:
                     if save_plots:
                         plt.savefig(out_images + "subgraph" + str(int(g.node[g.nodes()[0]]['code'])) + ".png")
                     plt.show()
-                
+
             # Replace RGB colors in an XML file       
             """
             <LabelList>
@@ -282,13 +286,13 @@ if plot_graph_color + plot_subgraphs + make_xml + save_colors > 0:
                         if g.node[g.nodes()[iN]]['abbr'] in elem.getchildren()[0].text:
                             elem.getchildren()[2].text = color
                             #print(g.node[g.nodes()[iN]]['abbr'],color)
-                    
+
 if plot_graph:
     if save_plots:
         plt.savefig(out_images + "graph.png")
 
 if make_xml:
     tree.write(out_xml)
-    
+
 if save_colors:
     f.close()
