@@ -60,16 +60,18 @@ save_plots = 1
 make_xml = 0
 
 # Paths
-in_dir = 'input/input_LPBA40/'  # 'input/input_BrainCOLOR'
-out_dir = 'output/output_LPBA40/'  # 'output/output_BrainCOLOR'
+in_dir = 'input/CUMC12/'  # 'input/input_BrainCOLOR'
+out_dir = 'output/CUMC12/'  # 'output/output_BrainCOLOR'
 out_colors = out_dir + 'region_colors.txt'
 out_images = out_dir
 
 # Region adjacency table
 in_table = in_dir + 'region_adjacency_matrix.xls'
-col_abbr = 0  # column with region abbreviations
-col_group = 2  # column with region group numbers
-col_start_data = 3  # first column with data
+col_ID = 0  # column with region abbreviations (not used by the program)
+col_group = 1  # column with region group numbers
+col_abbr = 2  # column with region abbreviations
+col_name = 3  # column with full region names (not used by the program)
+col_start_data = 4  # first column with data
 row_start_data = 1  # first row with data
 everyother = 2  # use <everyother> alternate row(s);
                 # set to 2 for redundant labels across, e.g. brain hemispheres
@@ -108,7 +110,7 @@ book = xlrd.open_workbook(in_table)
 sheet = book.sheets()[0]
 roi_abbrs = sheet.col_values(col_abbr)[1:sheet.ncols:everyother]
 roi_abbrs = [str(s).strip() for s in roi_abbrs]
-roi_numbers = sheet.col_values(2)[1:sheet.ncols:everyother] 
+roi_numbers = sheet.col_values(col_group)[1:sheet.ncols:everyother] 
 code_min = np.int(min(roi_numbers))
 code_max = np.int(max(roi_numbers))
 code_step = 1
@@ -117,6 +119,7 @@ iA = 0
 A = np.zeros(((sheet.nrows-row_start_data)/everyother,(sheet.ncols-col_start_data)/everyother))
 for irow in range(row_start_data,sheet.nrows,everyother):
     Arow = [s.value for s in sheet.row(irow)[col_start_data:]]
+    Arow = [s for s in Arow if s!='']
     A[iA] = Arow[0:len(Arow):everyother]
     iA += 1
 A = A/np.max(A)  # normalize weights
