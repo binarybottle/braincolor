@@ -50,12 +50,12 @@ from elementtree import ElementTree as et
 ##################
 
 # Output color text file
-save_colors = 1
+save_colors = 0
 verbose = 0
 
 # Choose plotting procedure(s) and save plots 
-save_plots = 1
-plot_colormap = 0  # Plot colormap
+save_plots = 0
+plot_colormap = 1  # Plot colormap
 plot_graph = 0  # Plot whole graph
 plot_subgraphs = 0  # Plot each individual colored subgraph
 

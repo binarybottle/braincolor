@@ -30,5 +30,6 @@ of similar colors in a color space:
 8. Plot the colormap, the whole graph, or individual colored subgraphs.
 9. Optional: Replace RGB colors in an XML file.  
    The program recolor_eps.[csh,py] takes the output XML to recolor EPS files.
+10. Optional: Use make_regiona_adjacency_matrix.py to help make input file.
 
 (c) Copyright 2010 . arno klein . arno@binarybottle.com . MIT license
