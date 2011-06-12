@@ -101,6 +101,9 @@ use_input_weights = 0
 # Plot whole graph with colored subgraphs
 plot_graph_color = 0  
 
+# Necessary for generating permutations
+run_permutations = 1
+
 #########
 # BEGIN #
 #########
@@ -175,7 +178,6 @@ if make_xml:
 if plot_graph_color + plot_subgraphs + make_xml + save_colors > 0:
     if save_colors:
         f = open(out_colors,'w')
-    run_permutations = 1
     for code_start in range(code_min,code_max+code_step,code_step):   
         glist = [n for n,d in G.nodes_iter(data=True) \
                    if (np.int(d['code'])>=code_start) and \
@@ -201,6 +203,7 @@ if plot_graph_color + plot_subgraphs + make_xml + save_colors > 0:
 
             # Compute the differences between every pair of colors in the colormap
             permutation_max = np.zeros(N)
+            NxN_matrix = np.zeros((N,N))
             if run_permutations:
                 # Convert subgraph into an adjacency matrix (1 for adjacent pair of regions)
                 neighbor_matrix = np.array(nx.to_numpy_matrix(g,nodelist=glist))
@@ -208,26 +211,28 @@ if plot_graph_color + plot_subgraphs + make_xml + save_colors > 0:
                     pass
                 else:
                     neighbor_matrix = (neighbor_matrix > 0).astype(np.uint8)
-
+                
                 # Compute permutations of colors and color pair differences
                 DEmax = 0
                 permutations = [np.array(s) for s in itertools.permutations(range(0,N),N)]
-                for ipermutations in range(len(permutations)):
-                    permutation = permutations[ipermutations]
-                    color_delta_matrix = np.zeros(np.shape(neighbor_matrix))   
-                    for i1, icolor1 in enumerate(permutation):
-                        lch1 = LCHuvColor(Lumas[icolor1],chroma,hues[icolor1]) 
-                        for i2, icolor2 in enumerate(permutation):
-                            if (i2 > i1) and (neighbor_matrix[i1,i2] > 0):
-                                lch2 = LCHuvColor(Lumas[icolor2],chroma,hues[icolor2])
-                                DE = lch1.delta_e(lch2, mode='cie2000')
-                                color_delta_matrix[i1,i2] = DE   
-                    DE = np.sum((color_delta_matrix * neighbor_matrix))
+                print(" ".join([str(N),'labels,',str(len(permutations)),'permutations:']))
+
+                for permutation in permutations:
+                    delta_matrix = NxN_matrix.copy()
+                    for i1 in range(N):
+                      for i2 in range(N):
+                        if (i2 > i1) and (neighbor_matrix[i1,i2] > 0):
+                          lch1 = LCHuvColor(Lumas[permutation[i1]],chroma,hues[permutation[i1]]) 
+                          lch2 = LCHuvColor(Lumas[permutation[i2]],chroma,hues[permutation[i2]])
+                          delta_matrix[i1,i2] = lch1.delta_e(lch2, mode='cie2000') 
+                    if use_input_weights:
+                        DE = np.sum((delta_matrix * neighbor_matrix))
+                    else:
+                        DE = np.sum(delta_matrix)
                     # Store the color permutation with the maximum adjacency cost
                     if DE > DEmax:
                         DEmax = DE
                         permutation_max = permutation
-                        #color_delta_matrix_max = color_delta_matrix
 
             # Color subgraphs
             if plot_graph_color:
