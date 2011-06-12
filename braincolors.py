@@ -49,15 +49,14 @@ from elementtree import ElementTree as et
 # SET PARAMETERS #
 ##################
 
-# Choose plotting procedure(s)
-plot_colormap = 1  # Plot colormap
-plot_graph = 0  # Plot whole graph
-plot_subgraphs = 1  # Plot each individual colored subgraph
-
-# Output color text file, save plots, and modify XML file
+# Output color text file
 save_colors = 1
+
+# Choose plotting procedure(s) and save plots 
 save_plots = 1
-make_xml = 0
+plot_colormap = 0  # Plot colormap
+plot_graph = 0  # Plot whole graph
+plot_subgraphs = 0  # Plot each individual colored subgraph
 
 # Paths
 in_dir = 'input/CUMC12/'  # 'input/input_BrainCOLOR'
@@ -76,15 +75,16 @@ row_start_data = 1  # first row with data
 everyother = 2  # use <everyother> alternate row(s);
                 # set to 2 for redundant labels across, e.g. brain hemispheres
 
-# If replacing RGB colors in an XML label file (make_xml=1)
+# Replace RGB colors in an XML label file
+make_xml = 0
 in_xml = in_dir + 'labels.xml'
 out_xml = out_dir + 'labels.xml'
 
 # Color parameters
 init_angle = 0 #22.5
-chroma = 70  # color "saturation" level
-Lumas_init = np.array([60,75,90])  # vary luminance values for adjacent colors
-repeat_hues = 1  # repeat each hue for the different Lumas
+chroma = 90  # color "saturation" level
+Lumas_init = np.array([40,50,60])  # vary luminance values for adjacent colors
+repeat_hues = 0  # repeat each hue for the different Lumas
 
 # Graph layout
 graph_node_size = 1000
@@ -137,7 +137,7 @@ if repeat_hues:
     color_angle = nLumas * color_angle
 else: 
     nangles = Ntotal
-        
+
 # Plot the colormap for the whole graph    
 if plot_colormap:
     plt.figure(Ntotal+1,figsize=(5,10))
@@ -173,7 +173,8 @@ if make_xml:
 
 # Loop through subgraphs
 if plot_graph_color + plot_subgraphs + make_xml + save_colors > 0:
-    f = open(out_colors,'w')
+    if save_colors:
+        f = open(out_colors,'w')
     run_permutations = 1
     for code_start in range(code_min,code_max+code_step,code_step):   
         glist = [n for n,d in G.nodes_iter(data=True) \
@@ -199,6 +200,7 @@ if plot_graph_color + plot_subgraphs + make_xml + save_colors > 0:
             init_angle += nangles_g*color_angle
 
             # Compute the differences between every pair of colors in the colormap
+            permutation_max = np.zeros(N)
             if run_permutations:
                 # Convert subgraph into an adjacency matrix (1 for adjacent pair of regions)
                 neighbor_matrix = np.array(nx.to_numpy_matrix(g,nodelist=glist))
@@ -210,7 +212,6 @@ if plot_graph_color + plot_subgraphs + make_xml + save_colors > 0:
                 # Compute permutations of colors and color pair differences
                 DEmax = 0
                 permutations = [np.array(s) for s in itertools.permutations(range(0,N),N)]
-                permutation_max = np.zeros(N)
                 for ipermutations in range(len(permutations)):
                     permutation = permutations[ipermutations]
                     color_delta_matrix = np.zeros(np.shape(neighbor_matrix))   
@@ -251,7 +252,8 @@ if plot_graph_color + plot_subgraphs + make_xml + save_colors > 0:
                     nx.draw_networkx_labels(g,pos,labels,font_size=subgraph_font_size,font_color='black')
                     plt.axis('off')
                 print("")
-                f.write("\n")
+                if save_colors:
+                    f.write("\n")
                 for iN in range(N):
                     ic = np.int(permutation_max[iN])
                     lch = LCHuvColor(Lumas[ic],chroma,hues[ic]) #print(lch)
@@ -259,7 +261,8 @@ if plot_graph_color + plot_subgraphs + make_xml + save_colors > 0:
                     color = [rgb.rgb_r/255.,rgb.rgb_g/255.,rgb.rgb_b/255.]
                     # Print optimal colors to the command line
                     print(g.node[g.nodes()[iN]]['abbr'] + ': ' + str([rgb.rgb_r,rgb.rgb_g,rgb.rgb_b]))
-                    f.write(g.node[g.nodes()[iN]]['abbr'] + ': ' + str([rgb.rgb_r,rgb.rgb_g,rgb.rgb_b]) + '\n')
+                    if save_colors:
+                        f.write(g.node[g.nodes()[iN]]['abbr'] + ': ' + str([rgb.rgb_r,rgb.rgb_g,rgb.rgb_b]) + '\n')
                     if plot_subgraphs:
                         nx.draw_networkx_nodes(g,pos,node_size=subgraph_node_size,nodelist=[g.node.keys()[iN]],node_color=color)
                 if plot_subgraphs:
