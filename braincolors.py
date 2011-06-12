@@ -51,6 +51,7 @@ from elementtree import ElementTree as et
 
 # Output color text file
 save_colors = 1
+verbose = 0
 
 # Choose plotting procedure(s) and save plots 
 save_plots = 1
@@ -215,7 +216,8 @@ if plot_graph_color + plot_subgraphs + make_xml + save_colors > 0:
                 # Compute permutations of colors and color pair differences
                 DEmax = 0
                 permutations = [np.array(s) for s in itertools.permutations(range(0,N),N)]
-                print(" ".join([str(N),'labels,',str(len(permutations)),'permutations:']))
+                if verbose:
+                    print(" ".join([str(N),'labels,',str(len(permutations)),'permutations:']))
 
                 for permutation in permutations:
                     delta_matrix = NxN_matrix.copy()
