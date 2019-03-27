@@ -1,5 +1,13 @@
+# brainCOLOR project
 
-http://www.braincolor.org
+The brainCOLOR project ("Collaborative Open Labeling Online Resource")
+started as a group of people interested in manual anatomical labeling of 
+human brain MRI data, and the visual presentation of labeled brain images.
+
+The brain labeling protocols and optimal colormaps can be seen on the web page:
+https://mindboggle.info/braincolor/
+
+# Software
 
 braincolors.py takes in an Excel file with an adjacency matrix, 
 where each value signifies adjacency between regions, and outputs the 
