@@ -1,6 +1,4 @@
-==========================================================
-brainCOLOR project
-==========================================================
+# brainCOLOR project
 
 The original brainCOLOR, for "Collaborative Open Labeling Online Resource,"
 started as a group of people interested in manual anatomical labeling of 
