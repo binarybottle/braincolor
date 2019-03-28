@@ -7,6 +7,9 @@ human brain MRI data, and the visual presentation of labeled brain images.
 The brain labeling protocols and optimal colormaps can be seen on the web page:
 https://mindboggle.info/braincolor/
 
+Extra files related to protocol development are here: 
+https://www.synapse.org/#!Synapse:syn3268020
+
 # Software
 
 braincolors.py takes in an Excel file with an adjacency matrix, 
